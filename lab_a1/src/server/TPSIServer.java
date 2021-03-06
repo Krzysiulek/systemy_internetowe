@@ -12,7 +12,6 @@ public class TPSIServer {
                                            Exception {
         HttpServer server = HttpServer.create(new InetSocketAddress(PORT), 0);
         server.createContext("/", new RootHandler());
-        server.createContext("/file", new FileRootHandler());
         System.out.println("Starting server on port: " + PORT);
         server.start();
     }
