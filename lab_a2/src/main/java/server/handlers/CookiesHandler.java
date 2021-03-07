@@ -23,7 +23,6 @@ public class CookiesHandler implements HttpHandler {
         exchange.getResponseHeaders().add("Content-Type", "text/html");
 
         HttpCookie cookie = new HttpCookie("random-cookie", cookieText);
-//        HttpCookie cookie2 = new HttpCookie("domain", "localhost");
         cookie.setDomain("http://localhost:8000/");
         exchange.getResponseHeaders().add("Set-Cookie", cookie.toString());
 
