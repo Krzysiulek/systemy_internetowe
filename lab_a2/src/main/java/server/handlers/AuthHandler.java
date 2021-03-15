@@ -26,7 +26,6 @@ public class AuthHandler implements HttpHandler {
         exchange.getResponseHeaders().set(REQ_AUTH_HEADER, BASIC_REALM);
 
         int status = getStatus(exchange);
-        System.out.println("");
 
         exchange.sendResponseHeaders(status, response.getBytes().length);
         OutputStream os = exchange.getResponseBody();
@@ -47,8 +46,6 @@ public class AuthHandler implements HttpHandler {
         if (split.length == 2) {
             String login = split[0];
             String password = split[1];
-//            System.out.println(login);
-//            System.out.println(password);
             return login.equals(MOCK_LOGIN) && password.equals(MOCK_PASSWORD) ? OK_STATUS : FORBIDDEN;
         }
 
