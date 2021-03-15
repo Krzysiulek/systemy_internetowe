@@ -14,17 +14,15 @@ class RootHandler implements HttpHandler {
 
     public void handle(HttpExchange exchange) throws
                                               IOException {
-        String response = getFileContent();
-        exchange.getResponseHeaders()
-                .set("Content-Type", "text/html");
-        exchange.sendResponseHeaders(200, response.getBytes().length);
+        byte[] fileContent = getFileContent();
+        exchange.sendResponseHeaders(200, fileContent.length);
         OutputStream os = exchange.getResponseBody();
-        os.write(response.getBytes());
+        os.write(fileContent);
         os.close();
     }
 
-    private String getFileContent() throws
+    private byte[] getFileContent() throws
                                     IOException {
-        return String.join("", Files.readAllLines(Paths.get(RootHandler.INDEX_FILE)));
+        return Files.readAllBytes(Paths.get(INDEX_FILE));
     }
 }
