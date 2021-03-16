@@ -105,11 +105,14 @@ public class FileHandler implements HttpHandler {
         if (currentLocation) {
             return "";
         }
+        String pathWithRegexEscapes = basePath.replace("\\", "\\\\");
+        String serverPath = path.toString()
+                       .replaceFirst(pathWithRegexEscapes, "");
 
         return new StringBuilder()
                 .append(directory ? "<b>" : "")
                 .append("<a href=\"")
-                .append(path.toString().replace(basePath, ""))
+                .append(serverPath)
                 .append("\">")
                 .append(fileName)
                 .append("</a>")
