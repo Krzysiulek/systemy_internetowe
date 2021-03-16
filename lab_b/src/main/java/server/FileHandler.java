@@ -109,7 +109,7 @@ public class FileHandler implements HttpHandler {
         return new StringBuilder()
                 .append(directory ? "<b>" : "")
                 .append("<a href=\"")
-                .append(path.toString().replaceFirst(basePath, ""))
+                .append(path.toString().replace(basePath, ""))
                 .append("\">")
                 .append(fileName)
                 .append("</a>")
