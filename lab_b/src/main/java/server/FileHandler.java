@@ -3,9 +3,12 @@ package server;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import files.FileComparator;
+import lombok.SneakyThrows;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.URLDecoder;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -17,6 +20,11 @@ import static server.Constants.*;
 public class FileHandler implements HttpHandler {
     private final String basePath;
     private Path currentPath;
+
+    private final String HTML_BEGGINGING = "<!DOCTYPE html>\n" +
+            "<html lang=\"pl\">\n" +
+            "<title>Page Title</title>\n" +
+            "<meta charset=\"UTF-8\">";
 
     FileHandler(String basePath) {
         this.basePath = basePath;
@@ -91,16 +99,20 @@ public class FileHandler implements HttpHandler {
                                             IOException {
         Stream<Path> pathStream = Files.list(currentPath);
 
-        return pathStream
+        return HTML_BEGGINGING + pathStream
                 .sorted(FileComparator::compareFiles)
                 .map(this::getHTML)
                 .collect(Collectors.joining());
     }
 
+    @SneakyThrows
     private String getHTML(Path path) {
         boolean directory = path.toFile().isDirectory();
         boolean currentLocation = currentPath.equals(path);
-        String fileName = path.getFileName().toString();
+
+        // todo to jest niepotrzebne chbya
+        String decode = URLDecoder.decode(path.toString(), "UTF-8");
+        String fileName = new File(decode).getName();
 
         if (currentLocation) {
             return "";

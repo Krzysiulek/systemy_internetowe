@@ -19,7 +19,6 @@ public class TPSIServer {
         if (pathExists(path)) {
             HttpServer server = HttpServer.create(new InetSocketAddress(PORT), 0);
             server.createContext("/", new FileHandler(path));
-            server.createContext("/../", new FileHandler(path));
             server.start();
             System.out.println("Server started on: http://localhost:" + PORT);
         } else {
