@@ -38,7 +38,6 @@ public class FileHandler implements HttpHandler {
         currentPath = Paths.get(basePath + path);
         System.out.println(currentPath);
 
-        // TODO: 3/7/21 działa, ale tylko przez telnet
         if (!currentPath.toFile().getCanonicalPath().startsWith(basePath)) {
             manageTraversalFound(exchange);
         }
@@ -119,7 +118,11 @@ public class FileHandler implements HttpHandler {
         }
         String pathWithRegexEscapes = basePath.replace("\\", "\\\\");
         String serverPath = path.toString()
-                       .replaceFirst(pathWithRegexEscapes, "");
+                                .replaceFirst(pathWithRegexEscapes, "");
+
+        if(serverPath.startsWith("\\")) {
+            serverPath = serverPath.substring(1);
+        }
 
         return new StringBuilder()
                 .append(directory ? "<b>" : "")
