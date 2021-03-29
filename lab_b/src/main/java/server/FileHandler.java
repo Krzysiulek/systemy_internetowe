@@ -12,6 +12,7 @@ import java.net.URLDecoder;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.spi.FileTypeDetector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -57,12 +58,16 @@ public class FileHandler implements HttpHandler {
 
     private void manageFile(HttpExchange exchange) throws
                                                    IOException {
-        exchange.getResponseHeaders()
-                .set(CONTENT_TYPE, TEXT_HTML);
+        String s = Files.probeContentType(currentPath);
+        System.out.println(s);
+
+        if (s != null) {
+            exchange.getResponseHeaders().set(CONTENT_TYPE, s);
+        }
+
         exchange.getResponseHeaders()
                 .add(CONTENT_DISPOSITION,
-                     "attachment; filename=" + currentPath.toFile()
-                                                          .getName());
+                     "attachment; filename=" + currentPath.getFileName().toFile());
         OutputStream os = exchange.getResponseBody();
         exchange.sendResponseHeaders(200,
                                      currentPath.toFile()
