@@ -18,7 +18,7 @@ import java.util.stream.Stream;
 import static server.Constants.*;
 
 public class FileHandler implements HttpHandler {
-    private final String basePath;
+    private final Path basePath;
     private Path currentPath;
 
     private final String HTML_BEGGINGING = "<!DOCTYPE html>\n" +
@@ -27,7 +27,7 @@ public class FileHandler implements HttpHandler {
             "<meta charset=\"UTF-8\">";
 
     FileHandler(String basePath) {
-        this.basePath = basePath;
+        this.basePath = Paths.get(basePath);
     }
 
     @Override
@@ -35,16 +35,20 @@ public class FileHandler implements HttpHandler {
                                               IOException {
         String path = exchange.getRequestURI()
                               .getPath();
-        currentPath = Paths.get(basePath + path);
+        currentPath = Paths.get(basePath.toString() + path);
         System.out.println(currentPath);
 
-        if (!currentPath.toFile().getCanonicalPath().startsWith(basePath)) {
+        if (!currentPath.toFile()
+                        .getCanonicalPath()
+                        .startsWith(basePath.toString())) {
             manageTraversalFound(exchange);
         }
 
-        if (currentPath.toFile().isFile()) {
+        if (currentPath.toFile()
+                       .isFile()) {
             manageFile(exchange);
-        } else if (currentPath.toFile().isDirectory()){
+        } else if (currentPath.toFile()
+                              .isDirectory()) {
             manageDirectory(exchange);
         } else {
             manageNofFound(exchange);
@@ -55,7 +59,10 @@ public class FileHandler implements HttpHandler {
                                                    IOException {
         exchange.getResponseHeaders()
                 .set(CONTENT_TYPE, TEXT_HTML);
-        exchange.getResponseHeaders().add(CONTENT_DISPOSITION, "attachment; filename=" + currentPath.toFile().getName());
+        exchange.getResponseHeaders()
+                .add(CONTENT_DISPOSITION,
+                     "attachment; filename=" + currentPath.toFile()
+                                                          .getName());
         OutputStream os = exchange.getResponseBody();
         exchange.sendResponseHeaders(200,
                                      currentPath.toFile()
@@ -86,7 +93,7 @@ public class FileHandler implements HttpHandler {
     }
 
     private void manageError(HttpExchange exchange, int status) throws
-                                                    IOException {
+                                                                IOException {
         exchange.getResponseHeaders()
                 .set(CONTENT_TYPE, TEXT_HTML);
         exchange.sendResponseHeaders(status, 0);
@@ -106,23 +113,21 @@ public class FileHandler implements HttpHandler {
 
     @SneakyThrows
     private String getHTML(Path path) {
-        boolean directory = path.toFile().isDirectory();
+        boolean directory = path.toFile()
+                                .isDirectory();
         boolean currentLocation = currentPath.equals(path);
 
         // todo to jest niepotrzebne chbya
         String decode = URLDecoder.decode(path.toString(), "UTF-8");
         String fileName = new File(decode).getName();
 
-        if (currentLocation) {
+        if (currentLocation || !path.toFile()
+                                    .exists()) {
             return "";
         }
-        String pathWithRegexEscapes = basePath.replace("\\", "\\\\");
         String serverPath = path.toString()
-                                .replaceFirst(pathWithRegexEscapes, "");
-
-        if(serverPath.startsWith("\\")) {
-            serverPath = serverPath.substring(1);
-        }
+                                .replace(basePath.toString(), "");
+        serverPath = serverPath.replace("\\", "/");
 
         return new StringBuilder()
                 .append(directory ? "<b>" : "")
@@ -132,7 +137,8 @@ public class FileHandler implements HttpHandler {
                 .append(fileName)
                 .append("</a>")
                 .append(directory ? "</b>" : "")
-                .append("<br>").toString();
+                .append("<br>")
+                .toString();
 
     }
 }
