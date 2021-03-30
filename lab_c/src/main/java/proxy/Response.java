@@ -10,6 +10,7 @@ import java.util.Map;
 @Builder
 class Response {
     private byte[] body;
+    private long bodyLength;
     private int code;
     private Map<String, List<String>> headerFields;
 }
