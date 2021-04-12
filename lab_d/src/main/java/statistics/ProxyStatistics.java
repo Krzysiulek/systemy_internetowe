@@ -5,6 +5,9 @@ import proxy.Response;
 import java.io.IOException;
 
 public interface ProxyStatistics {
-    void add(Response response) throws
-                                IOException;
+    void addSentData(Response response) throws
+                                        IOException;
+
+    void addReceivedData(Response response) throws
+                                            IOException;
 }

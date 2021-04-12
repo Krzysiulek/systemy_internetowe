@@ -1,5 +1,6 @@
 package proxy;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -9,8 +10,8 @@ import java.util.Map;
 
 @Getter
 @Builder
-public
-class Response {
+@AllArgsConstructor
+public class Response {
     private byte[] body;
     private long bodyLength;
     private int code;

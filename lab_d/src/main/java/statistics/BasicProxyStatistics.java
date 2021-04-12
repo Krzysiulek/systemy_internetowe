@@ -1,5 +1,6 @@
 package statistics;
 
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import proxy.Response;
 
@@ -13,55 +14,87 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
 public class BasicProxyStatistics implements ProxyStatistics {
-    private final ConcurrentHashMap<String, Statistics> statisticsMap = new ConcurrentHashMap<>();
-    private Path path = Paths.get(new File("statistics/statistics.csv").getAbsolutePath());
+    @Getter
+    private final ConcurrentHashMap<String, Statistics> statisticsSentMap = new ConcurrentHashMap<>();
+    @Getter
+    private final ConcurrentHashMap<String, Statistics> statisticsReceivedMap = new ConcurrentHashMap<>();
+    private Path sentData = Paths.get(new File("statistics/sent.csv").getAbsolutePath());
+    private Path receivedData = Paths.get(new File("statistics/received.csv").getAbsolutePath());
 
     public BasicProxyStatistics() throws
                                   IOException {
-        if (path.toFile()
-                .exists()) {
-            loadMap();
-            log.info("Statistics file {} updated", path);
-        } else {
-            createStatisticsFile();
-            log.warn("Statistics file {} created", path);
-        }
+        loadOrUpdateMap(sentData, statisticsSentMap);
+        loadOrUpdateMap(receivedData, statisticsReceivedMap);
     }
 
     @Override
-    public void add(Response response) throws
-                                       IOException {
+    public synchronized void addSentData(Response response) throws
+                                                            IOException {
         String domain = response.getUri()
                                 .getHost();
 
-        statisticsMap.putIfAbsent(domain, new Statistics(domain));
-        Statistics statistics = this.statisticsMap.get(domain);
+        statisticsSentMap.putIfAbsent(domain, new Statistics(domain));
+        Statistics statistics = this.statisticsSentMap.get(domain);
         statistics.add(response);
 
-        updateFile();
+        updateSentFile();
     }
 
-    private void loadMap() throws
-                           IOException {
+    @Override
+    public synchronized void addReceivedData(Response response) throws
+                                                                IOException {
+        String domain = response.getUri()
+                                .getHost();
+
+        statisticsReceivedMap.putIfAbsent(domain, new Statistics(domain));
+        Statistics statistics = this.statisticsReceivedMap.get(domain);
+        statistics.add(response);
+
+        updateReceivedFile();
+    }
+
+    private void loadMap(Path path, ConcurrentHashMap<String, Statistics> statisticsMap) throws
+                                                                                         IOException {
         Files.readAllLines(path)
              .stream()
              .map(Statistics::getFromLine)
              .filter(Objects::nonNull)
-             .forEach(statistics -> this.statisticsMap.put(statistics.getDomain(), statistics));
+             .forEach(statistics -> statisticsMap.put(statistics.getDomain(), statistics));
     }
 
-    private boolean createStatisticsFile() throws
-                                           IOException {
+    private void loadOrUpdateMap(Path path,
+                                 ConcurrentHashMap<String, Statistics> statisticsMap) throws
+                                                                                      IOException {
+        if (path.toFile()
+                .exists()) {
+            loadMap(path, statisticsMap);
+            log.info("Statistics file {} updated", path);
+        } else {
+            createStatisticsFile(path);
+            log.warn("Statistics file {} created", path);
+        }
+    }
+
+    private boolean createStatisticsFile(Path path) throws
+                                                    IOException {
         File file = new File(path.toString());
         return file.getParentFile()
                    .mkdirs() && file.createNewFile();
     }
 
-    private void updateFile() throws
-                              IOException {
-        String content = StatisticsFormatter.getContent(statisticsMap);
+    private synchronized void updateSentFile() throws
+                                               IOException {
+        String content = StatisticsFormatter.getContent(statisticsSentMap);
 
-        Files.write(path, content.getBytes());
-        log.info("File {} updated", path.toAbsolutePath());
+        Files.write(sentData, content.getBytes());
+        log.info("File {} updated", sentData.toAbsolutePath());
+    }
+
+    private synchronized void updateReceivedFile() throws
+                                                   IOException {
+        String content = StatisticsFormatter.getContent(statisticsReceivedMap);
+
+        Files.write(receivedData, content.getBytes());
+        log.info("File {} updated", receivedData.toAbsolutePath());
     }
 }

@@ -47,7 +47,7 @@ public class ProxyHandler implements HttpHandler {
     private void handleNormally(HttpExchange exchange) throws
                                                        IOException {
         Response res = createRequest(exchange);
-        proxyStatistics.add(res);
+        proxyStatistics.addReceivedData(res);
 
         res.getHeaderFields()
            .entrySet()
@@ -59,6 +59,12 @@ public class ProxyHandler implements HttpHandler {
                 .add(VIA, PROXY_INFO);
 
         exchange.sendResponseHeaders(res.getCode(), res.getBodyLength());
+
+        proxyStatistics.addSentData(Response.builder()
+                                            .uri(res.getUri())
+                                            .bodyLength(res.getBodyLength())
+                                            .build());
+
         OutputStream os = exchange.getResponseBody();
         os.write(res.getBody());
         os.close();
@@ -76,7 +82,7 @@ public class ProxyHandler implements HttpHandler {
                                     .uri(exchange.getRequestURI())
                                     .build();
 
-        proxyStatistics.add(response);
+        proxyStatistics.addSentData(response);
         exchange.sendResponseHeaders(errorCode, 0);
         OutputStream os = exchange.getResponseBody();
         os.write(emptyBody);

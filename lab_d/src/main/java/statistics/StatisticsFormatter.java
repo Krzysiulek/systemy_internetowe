@@ -7,9 +7,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class StatisticsFormatter {
+class StatisticsFormatter {
     private static final String CSV_LINE_FORMAT = "%s; %s; %s %n";
-    private static final String CSV_HEADER = String.format(CSV_LINE_FORMAT, "Domain", "Request count", "Sent data [b]");
+    private static final String CSV_HEADER = String.format(CSV_LINE_FORMAT, "Domain", "Request count", "Data [b]");
 
     static String getContent(ConcurrentHashMap<String, Statistics> statisticsMap) {
         return CSV_HEADER + statisticsMap

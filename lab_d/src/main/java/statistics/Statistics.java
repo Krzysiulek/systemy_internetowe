@@ -9,7 +9,7 @@ import proxy.Response;
 @Getter
 @RequiredArgsConstructor
 @AllArgsConstructor
-class Statistics {
+public class Statistics {
     private final String domain;
     private long requestCount;
     private long bodyLength;
@@ -32,7 +32,7 @@ class Statistics {
         return null;
     }
 
-    void add(Response response) {
+    synchronized void add(Response response) {
         requestCount += 1;
         bodyLength += response.getBodyLength();
     }
