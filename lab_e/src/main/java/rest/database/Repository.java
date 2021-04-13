@@ -10,11 +10,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-// TODO: 4/13/21 podzielic repozytoria 
 public class Repository {
     private static Repository repository;
+
     private static int indexCounter = 0;
     private static int gradesCounter = 0;
+    private static int courseCounter = 0;
+
+
     @Getter
     private final List<Student> studentsDatabase = new ArrayList<>();
     @Getter
@@ -26,13 +29,17 @@ public class Repository {
     private Repository() {
         addStudent("Krzysztof", "Czarnecki", new Date());
         addStudent("Jan", "Kowalski", new Date());
-        Course c1 = addCourse("Sint", "Nowak");
+        addStudent("Leonardo", "Dicaprio", new Date());
+
+        Course c1 = addCourse("SINT", "Nowak");
         Course c2 = addCourse("MISIO", "Bandi");
+
         addGrade(1, 4.0, c1);
         addGrade(2, 4.5, c2);
+        addGrade(3, 2.0, c2);
     }
 
-    // TODO: 4/13/21  
+
     public static Repository getInstance() {
         synchronized (Repository.class) {
             if (repository == null) {
@@ -40,16 +47,6 @@ public class Repository {
             }
         }
         return repository;
-    }
-
-    private static int createStudentIndex() {
-        indexCounter++;
-        return indexCounter;
-    }
-
-    private static int createGradeId() {
-        gradesCounter++;
-        return gradesCounter;
     }
 
     public Course addCourse(String name, String teacher) {
@@ -70,19 +67,13 @@ public class Repository {
                              .anyMatch(course -> course.getId() == id);
     }
 
-    // TODO: 4/13/21  
-    public int createCourseIndex() {
-        return this.courseDatabase.size() + 1;
-    }
 
     public Grade getStudentGrade(int index, int gradeId) {
         List<Grade> grades = getStudentGrades(index);
-        for (Grade g : grades) {
-            if (g.getId() == gradeId) {
-                return g;
-            }
-        }
-        return null;
+        return grades.stream()
+                     .filter(g -> g.getId() == gradeId)
+                     .findFirst()
+                     .orElse(null);
     }
 
     public Grade addGrade(int index, Double gradeVal, Course c) {
@@ -111,12 +102,8 @@ public class Repository {
     }
 
     public boolean gradeExists(int gradeId) {
-        for (Grade g : this.gradesDatabase) {
-            if (g.getId() == gradeId) {
-                return true;
-            }
-        }
-        return false;
+        return this.gradesDatabase.stream()
+                                  .anyMatch(g -> g.getId() == gradeId);
     }
 
     public Grade getGrade(int gradeId) {
@@ -132,12 +119,8 @@ public class Repository {
     }
 
     public boolean studentExists(int index) {
-        for (Student s : this.studentsDatabase) {
-            if (s.getIndex() == index) {
-                return true;
-            }
-        }
-        return false;
+        return this.studentsDatabase.stream()
+                                    .anyMatch(s -> s.getIndex() == index);
     }
 
     public Student addStudent(String name, String surname, Date birthDate) {
@@ -159,12 +142,26 @@ public class Repository {
 
     public void deleteCourse(int id) {
         courseDatabase.removeIf(course -> course.getId() == id);
-
         gradesDatabase.removeIf(grade -> grade.getCourse()
                                               .getId() == id);
     }
 
     public List<Grade> getStudentGrades(int index) {
         return getStudentByIndex(index).getGrades();
+    }
+
+    private static int createCourseIndex() {
+        courseCounter++;
+        return courseCounter;
+    }
+
+    private static int createStudentIndex() {
+        indexCounter++;
+        return indexCounter;
+    }
+
+    private static int createGradeId() {
+        gradesCounter++;
+        return gradesCounter;
     }
 }

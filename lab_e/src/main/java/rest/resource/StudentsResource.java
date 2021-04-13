@@ -6,7 +6,6 @@ import rest.database.Repository;
 import rest.models.Student;
 
 import javax.ws.rs.*;
-import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.net.URI;
@@ -24,10 +23,8 @@ public class StudentsResource {
     public Response getAllStudents() {
         List<Student> students = repository.getStudentsDatabase();
         log.info("Gettings all ({}) students", students.size());
-        GenericEntity<List<Student>> students_entity = new GenericEntity<List<Student>>(students) {
-        };
         return Response.status(Response.Status.OK)
-                       .entity(students_entity)
+                       .entity(students)
                        .build();
     }
 
@@ -74,7 +71,6 @@ public class StudentsResource {
     @Produces(MediaType.APPLICATION_XML)
     @Path("{index}")
     public Response putStudent(Student updatedStudent, @PathParam("index") int index) {
-
         boolean studentExists = repository.studentExists(index);
         if (!studentExists) {
             log.info("Skipping update. Student {} doesn't exists", index);
@@ -82,7 +78,6 @@ public class StudentsResource {
                            .build();
         }
 
-        boolean modified = false;
         Student studentInDataBase = repository.getStudentByIndex(index);
         log.info("Updating student {}", index);
 
@@ -91,10 +86,6 @@ public class StudentsResource {
             studentInDataBase.setFirstName(updatedStudent.getFirstName());
             studentInDataBase.setLastName(updatedStudent.getLastName());
             studentInDataBase.setBirthday(updatedStudent.getBirthday());
-            modified = true;
-        }
-
-        if (modified) {
             log.info("Student {} updated", index);
             return Response.status(Response.Status.NO_CONTENT)
                            .entity(studentInDataBase)

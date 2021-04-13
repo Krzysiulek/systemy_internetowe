@@ -20,10 +20,11 @@ public class CourseResource {
     @Produces(MediaType.APPLICATION_XML)
     public Response getAllCourses() {
         List<Course> courses = repository.getCourseDatabase();
-        GenericEntity<List<Course>> courses_entity = new GenericEntity<List<Course>>(courses) {
+        GenericEntity<List<Course>> entities = new GenericEntity<List<Course>>(courses) {
         };
+
         return Response.status(Response.Status.OK)
-                       .entity(courses_entity)
+                       .entity(entities)
                        .build();
     }
 
@@ -47,10 +48,11 @@ public class CourseResource {
     public Response postCourse(Course c) throws
                                          URISyntaxException {
         boolean courseExists = repository.courseExists(c.getId());
-        if (courseExists)
+        if (courseExists) {
             return Response.status(Response.Status.FORBIDDEN)
                            .build();
-        // TODO: 4/13/21 poprawic
+        }
+
         if (c.getName() != null && c.getLecturer() != null) {
             Course course = repository.addCourse(c.getName(), c.getLecturer());
             return Response.status(Response.Status.CREATED)
@@ -74,33 +76,22 @@ public class CourseResource {
                            .build();
         }
 
-        // TODO: 4/13/21 tutaj poprawić
-
-        boolean modified = false;
         Course courseInDataBase = repository.getCourse(id);
-        String coursePutName = c.getName();
-        String coursePutTeacher = c.getLecturer();
 
-        if (coursePutName != null && !coursePutName.equals(courseInDataBase.getName())) {
-            courseInDataBase.setName(coursePutName);
-            modified = true;
-        }
-        if (coursePutTeacher != null && !coursePutTeacher.equals(courseInDataBase.getLecturer())) {
-            courseInDataBase.setLecturer(coursePutTeacher);
-            modified = true;
-        }
-        if (modified)
+        if (isValid(c)) {
+            courseInDataBase.setLecturer(c.getLecturer());
+            courseInDataBase.setName(c.getName());
             return Response.status(Response.Status.OK)
                            .entity(c)
                            .build();
-        else
-            return Response.status(Response.Status.NOT_MODIFIED)
-                           .entity(c)
-                           .build();
+        }
+
+        return Response.status(Response.Status.NOT_MODIFIED)
+                       .entity(c)
+                       .build();
     }
 
 
-    // TODO: 4/13/21 USUWAC TAKZE OCENY (czy jakos tak)
     @DELETE
     @Path("{id}")
     public Response deleteCourse(@PathParam("id") int id) {
@@ -109,10 +100,13 @@ public class CourseResource {
                            .build();
         }
 
-
         repository.deleteCourse(id);
         return Response.status(Response.Status.NO_CONTENT)
                        .build();
+    }
+
+    private boolean isValid(Course courseInDataBase) {
+        return courseInDataBase.getLecturer() != null && courseInDataBase.getName() != null;
     }
 
 }

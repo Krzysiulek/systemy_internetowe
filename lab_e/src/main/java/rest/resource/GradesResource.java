@@ -4,7 +4,6 @@ import rest.database.Repository;
 import rest.models.Grade;
 
 import javax.ws.rs.*;
-import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.net.URI;
@@ -20,10 +19,8 @@ public class GradesResource {
     public Response getAllGrades(@PathParam("index") int index) {
         List<Grade> grades = repository.getStudentGrades(index);
         if (grades != null) {
-            GenericEntity<List<Grade>> grades_entity = new GenericEntity<List<Grade>>(grades) {
-            };
             return Response.status(Response.Status.OK)
-                           .entity(grades_entity)
+                           .entity(grades)
                            .build();
         }
         return Response.status(Response.Status.NOT_FOUND)
