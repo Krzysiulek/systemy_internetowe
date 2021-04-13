@@ -29,14 +29,12 @@ public class Repository {
     private Repository() {
         addStudent("Krzysztof", "Czarnecki", new Date());
         addStudent("Jan", "Kowalski", new Date());
-        addStudent("Leonardo", "Dicaprio", new Date());
 
         Course c1 = addCourse("SINT", "Nowak");
         Course c2 = addCourse("MISIO", "Bandi");
 
         addGrade(1, 4.0, c1);
         addGrade(2, 4.5, c2);
-        addGrade(3, 2.0, c2);
     }
 
 
@@ -80,6 +78,7 @@ public class Repository {
         if ((gradeVal < 2.0) && (gradeVal > 5.0) && (gradeVal % 0.5 != 0)) {
             throw new RuntimeException("Invalid grade");
         }
+
         Grade g = new Grade(createGradeId(), gradeVal, new Date(), c);
         getStudentByIndex(index).addGrade(g);
         this.gradesDatabase.add(g);
@@ -93,11 +92,11 @@ public class Repository {
             throw new RuntimeException("Invalid grade");
         }
 
+        grade.setId(createGradeId());
         grade.setCourse(repository.getCourse(grade.getCourse()
                                                   .getId()));
         getStudentByIndex(index).addGrade(grade);
-        grade.setId(createGradeId());
-        this.gradesDatabase.add(grade);
+        gradesDatabase.add(grade);
         return grade;
     }
 
@@ -119,8 +118,8 @@ public class Repository {
     }
 
     public boolean studentExists(int index) {
-        return this.studentsDatabase.stream()
-                                    .anyMatch(s -> s.getIndex() == index);
+        return studentsDatabase.stream()
+                               .anyMatch(s -> s.getIndex() == index);
     }
 
     public Student addStudent(String name, String surname, Date birthDate) {

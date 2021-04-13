@@ -6,6 +6,7 @@ import rest.database.Repository;
 import rest.models.Student;
 
 import javax.ws.rs.*;
+import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.net.URI;
@@ -23,8 +24,10 @@ public class StudentsResource {
     public Response getAllStudents() {
         List<Student> students = repository.getStudentsDatabase();
         log.info("Gettings all ({}) students", students.size());
+        GenericEntity<List<Student>> entities = new GenericEntity<List<Student>>(students) {
+        };
         return Response.status(Response.Status.OK)
-                       .entity(students)
+                       .entity(entities)
                        .build();
     }
 
