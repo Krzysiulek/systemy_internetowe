@@ -1,4 +1,4 @@
-package rest.models;
+package jerseyrest.models;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

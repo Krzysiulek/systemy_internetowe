@@ -1,8 +1,8 @@
-package rest.resource;
+package jerseyrest.resource;
 
 
-import rest.database.Repository;
-import rest.models.Course;
+import jerseyrest.database.Repository;
+import jerseyrest.models.Course;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.GenericEntity;

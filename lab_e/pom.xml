@@ -185,7 +185,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <mainClass>rest.Main</mainClass>
+                    <mainClass>jerseyrest.Main</mainClass>
                 </configuration>
             </plugin>
         </plugins>

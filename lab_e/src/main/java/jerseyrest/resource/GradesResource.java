@@ -1,7 +1,7 @@
-package rest.resource;
+package jerseyrest.resource;
 
-import rest.database.Repository;
-import rest.models.Grade;
+import jerseyrest.database.Repository;
+import jerseyrest.models.Grade;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.GenericEntity;

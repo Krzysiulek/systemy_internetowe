@@ -1,17 +1,19 @@
-package rest.models;
+package jerseyrest.models;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.xml.bind.annotation.XmlRootElement;
+import java.util.Date;
 
-@XmlRootElement(name = "course")
+@XmlRootElement(name = "grade")
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
-public class Course {
+public class Grade {
     private int id;
-    private String name;
-    private String lecturer;
+    private Double value;
+    private Date date;
+    private Course course;
 }

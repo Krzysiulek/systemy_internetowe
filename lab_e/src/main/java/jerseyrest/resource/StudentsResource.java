@@ -1,9 +1,9 @@
-package rest.resource;
+package jerseyrest.resource;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
-import rest.database.Repository;
-import rest.models.Student;
+import jerseyrest.database.Repository;
+import jerseyrest.models.Student;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.GenericEntity;

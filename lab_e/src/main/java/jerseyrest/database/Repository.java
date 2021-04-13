@@ -1,10 +1,10 @@
-package rest.database;
+package jerseyrest.database;
 
 
 import lombok.Getter;
-import rest.models.Course;
-import rest.models.Grade;
-import rest.models.Student;
+import jerseyrest.models.Course;
+import jerseyrest.models.Grade;
+import jerseyrest.models.Student;
 
 import java.util.ArrayList;
 import java.util.Date;

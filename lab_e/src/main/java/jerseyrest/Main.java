@@ -1,4 +1,4 @@
-package rest;
+package jerseyrest;
 
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
@@ -13,7 +13,7 @@ public class Main {
 
 
     public static HttpServer startServer() {
-        final ResourceConfig rc = new ResourceConfig().packages("rest");
+        final ResourceConfig rc = new ResourceConfig().packages("jerseyrest");
         rc.register(new ExceptionHandler());
         return GrizzlyHttpServerFactory.createHttpServer(URI.create(BASE_URI), rc);
     }
