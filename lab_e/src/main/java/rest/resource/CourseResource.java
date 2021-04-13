@@ -50,7 +50,8 @@ public class CourseResource {
         if (courseExists)
             return Response.status(Response.Status.FORBIDDEN)
                            .build();
-        if (c.getName() != null & c.getLecturer() != null) {
+        // TODO: 4/13/21 poprawic
+        if (c.getName() != null && c.getLecturer() != null) {
             Course course = repository.addCourse(c.getName(), c.getLecturer());
             return Response.status(Response.Status.CREATED)
                            .location(new URI("/courses/" + course.getId()))
@@ -72,6 +73,8 @@ public class CourseResource {
             return Response.status(Response.Status.NOT_FOUND)
                            .build();
         }
+
+        // TODO: 4/13/21 tutaj poprawić
 
         boolean modified = false;
         Course courseInDataBase = repository.getCourse(id);

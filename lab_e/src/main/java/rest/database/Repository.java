@@ -10,28 +10,18 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+// TODO: 4/13/21 podzielic repozytoria 
 public class Repository {
+    private static Repository repository;
+    private static int indexCounter = 0;
+    private static int gradesCounter = 0;
     @Getter
     private final List<Student> studentsDatabase = new ArrayList<>();
     @Getter
     private final List<Grade> gradesDatabase = new ArrayList<>();
     @Getter
     private final List<Course> courseDatabase = new ArrayList<>();
-    private static Repository repository;
-    private static int indexCounter = 0;
-    private static int gradesCounter = 0;
 
-
-    public static Repository getInstance() {
-        if (repository == null) {
-            synchronized (Repository.class) {
-                if (repository == null) {
-                    repository = new Repository();
-                }
-            }
-        }
-        return repository;
-    }
 
     private Repository() {
         addStudent("Krzysztof", "Czarnecki", new Date());
@@ -42,6 +32,25 @@ public class Repository {
         addGrade(2, 4.5, c2);
     }
 
+    // TODO: 4/13/21  
+    public static Repository getInstance() {
+        synchronized (Repository.class) {
+            if (repository == null) {
+                repository = new Repository();
+            }
+        }
+        return repository;
+    }
+
+    private static int createStudentIndex() {
+        indexCounter++;
+        return indexCounter;
+    }
+
+    private static int createGradeId() {
+        gradesCounter++;
+        return gradesCounter;
+    }
 
     public Course addCourse(String name, String teacher) {
         Course c = new Course(createCourseIndex(), name, teacher);
@@ -61,10 +70,10 @@ public class Repository {
                              .anyMatch(course -> course.getId() == id);
     }
 
+    // TODO: 4/13/21  
     public int createCourseIndex() {
         return this.courseDatabase.size() + 1;
     }
-
 
     public Grade getStudentGrade(int index, int gradeId) {
         List<Grade> grades = getStudentGrades(index);
@@ -121,17 +130,6 @@ public class Repository {
         getStudentByIndex(index).deleteGrade(getStudentGrade(index, id));
         gradesDatabase.removeIf(grade -> grade.getId() == id);
     }
-
-    private static int createStudentIndex() {
-        indexCounter++;
-        return indexCounter;
-    }
-
-    private static int createGradeId() {
-        gradesCounter++;
-        return gradesCounter;
-    }
-
 
     public boolean studentExists(int index) {
         for (Student s : this.studentsDatabase) {
