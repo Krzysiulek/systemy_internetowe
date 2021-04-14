@@ -11,7 +11,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 
-@Path("students/{index}/grade")
+@Path("students/{index}/grades")
 public class GradesResource {
     private CoursesRepository coursesRepository = CoursesRepository.getInstance();
     private StudentsRepository studentsRepository = StudentsRepository.getInstance();
