@@ -1,7 +1,6 @@
-package jerseyrest.resource;
+package jerseyrest.students;
 
-import jerseyrest.database.Repository;
-import jerseyrest.models.Grade;
+import jerseyrest.courses.CoursesRepository;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.GenericEntity;
@@ -13,12 +12,13 @@ import java.util.List;
 
 @Path("students/{index}/grades")
 public class GradesResource {
-    Repository repository = Repository.getInstance();
+    CoursesRepository coursesRepository = CoursesRepository.getInstance();
+    StudentsRepository studentsRepository = StudentsRepository.getInstance();
 
     @GET
     @Produces(MediaType.APPLICATION_XML)
     public Response getAllGrades(@PathParam("index") int index) {
-        List<Grade> grades = repository.getStudentGrades(index);
+        List<Grade> grades = studentsRepository.getStudentGrades(index);
         if (grades != null) {
             GenericEntity<List<Grade>> grades_entity = new GenericEntity<List<Grade>>(grades) {
             };
@@ -34,10 +34,12 @@ public class GradesResource {
     @Path("{gradeId}")
     @Produces(MediaType.APPLICATION_XML)
     public Response getGrade(@PathParam("index") int index, @PathParam("gradeId") int gradeId) {
-        Grade grade = repository.getStudentGrade(index, gradeId);
-        if (repository.gradeExists(gradeId)) {
+        Grade grade = studentsRepository.getStudentGrade(index, gradeId);
+        if (studentsRepository.gradeExists(index, gradeId)) {
+            GenericEntity<Grade> gradeEntity = new GenericEntity<>(grade) {
+            };
             return Response.status(Response.Status.OK)
-                           .entity(grade)
+                           .entity(gradeEntity)
                            .build();
         }
         return Response.status(Response.Status.NOT_FOUND)
@@ -51,7 +53,7 @@ public class GradesResource {
                                                                       URISyntaxException {
 
         if (isGradeValid(g)) {
-            Grade newGrade = repository.addGrade(index, g);
+            Grade newGrade = studentsRepository.addStudentGrade(index, g);
             return Response.status(Response.Status.CREATED)
                            .entity(newGrade)
                            .location(new URI("/students/" + index + "/grades/" + newGrade.getId()))
@@ -65,21 +67,21 @@ public class GradesResource {
     @Path("{gradeId}")
     @Produces(MediaType.APPLICATION_XML)
     @Consumes(MediaType.APPLICATION_XML)
-    public Response putGrade(Grade g, @PathParam("index") int index, @PathParam("gradeId") int gradeId) {
-        boolean gradeExists = repository.gradeExists(gradeId);
+    public Response putGrade(Grade newGrade, @PathParam("index") int index, @PathParam("gradeId") int gradeId) {
+        boolean gradeExists = studentsRepository.gradeExists(index, gradeId);
         if (!gradeExists) {
             return Response.status(Response.Status.NOT_FOUND)
-                           .entity(g)
+                           .entity(newGrade)
                            .build();
         }
 
-        Grade gradeInDataBase = repository.getGrade(gradeId);
+        Grade gradeInDataBase = studentsRepository.getStudentGrade(index, gradeId);
 
-        if (isGradeValid(g)) {
-            gradeInDataBase.setValue(g.getValue());
-            gradeInDataBase.setDate(g.getDate());
-            gradeInDataBase.setCourse(repository.getCourse(g.getCourse()
-                                                            .getId()));
+        if (isGradeValid(newGrade)) {
+            gradeInDataBase.setValue(newGrade.getValue());
+            gradeInDataBase.setDate(newGrade.getDate());
+            gradeInDataBase.setCourse(coursesRepository.getCourse(newGrade.getCourse()
+                                                                          .getId()));
 
             return Response.status(Response.Status.NO_CONTENT)
                            .entity(gradeInDataBase)
@@ -95,12 +97,12 @@ public class GradesResource {
     @DELETE
     @Path("{gradeId}")
     public Response deleteCourse(@PathParam("index") int index, @PathParam("gradeId") int gradeId) {
-        if (!repository.gradeExists(gradeId)) {
+        if (!studentsRepository.gradeExists(index, gradeId)) {
             return Response.status(Response.Status.NOT_FOUND)
                            .build();
         }
 
-        repository.deleteGrade(index, gradeId);
+        studentsRepository.deleteStudentGrade(index, gradeId);
         return Response.status(Response.Status.NO_CONTENT)
                        .build();
     }
@@ -109,21 +111,9 @@ public class GradesResource {
         return null != grade.getCourse()
                 && grade.getValue() >= 2.0 && grade.getValue() <= 5.0
                 && grade.getValue() % 0.5 == 0
-                && repository.courseExists(grade.getCourse()
-                                                .getId());
+                && coursesRepository.courseExists(grade.getCourse()
+                                                       .getId());
     }
 
-
-    /**
-     *  <grade>
-     *     <course>
-     *     <id>1</id>
-     *     <lecturer>Nowak</lecturer>
-     *     <name>Sint</name>
-     *  </course>
-     *      <date>2021-04-13T15:24:37.438+02:00</date>
-     *      <value>3.5</value>
-     *  </grade>
-     */
 
 }

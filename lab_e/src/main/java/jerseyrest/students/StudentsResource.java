@@ -1,9 +1,8 @@
-package jerseyrest.resource;
+package jerseyrest.students;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
-import jerseyrest.database.Repository;
-import jerseyrest.models.Student;
+import jerseyrest.courses.CoursesRepository;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.GenericEntity;
@@ -16,16 +15,18 @@ import java.util.List;
 @Path("students")
 @Slf4j
 public class StudentsResource {
-    private Repository repository = Repository.getInstance();
+    private CoursesRepository coursesRepository = CoursesRepository.getInstance();
+    private StudentsRepository studentsRepository = StudentsRepository.getInstance();
 
 
     @GET
     @Produces(MediaType.APPLICATION_XML)
     public Response getAllStudents() {
-        List<Student> students = repository.getStudentsDatabase();
+        List<Student> students = studentsRepository.findAllStudents();
         log.info("Gettings all ({}) students", students.size());
-        GenericEntity<List<Student>> entities = new GenericEntity<List<Student>>(students) {
+        GenericEntity<List<Student>> entities = new GenericEntity<>(students) {
         };
+
         return Response.status(Response.Status.OK)
                        .entity(entities)
                        .build();
@@ -35,10 +36,10 @@ public class StudentsResource {
     @Path("/{index}")
     @Produces(MediaType.APPLICATION_XML)
     public Response getStudent(@PathParam("index") int index) {
-        if (repository.studentExists(index)) {
-            Student s = repository.getStudentByIndex(index);
+        if (studentsRepository.ifStudentExists(index)) {
+            Student student = studentsRepository.findStudentByIndex(index);
             return Response.status(Response.Status.OK)
-                           .entity(s)
+                           .entity(student)
                            .build();
         }
 
@@ -54,9 +55,9 @@ public class StudentsResource {
                                                     URISyntaxException {
 
         if (isStudentValid(newStudent)) {
-            Student student = repository.addStudent(newStudent.getFirstName(),
-                                                    newStudent.getLastName(),
-                                                    newStudent.getBirthday());
+            Student student = studentsRepository.addStudent(newStudent.getFirstName(),
+                                                            newStudent.getLastName(),
+                                                            newStudent.getBirthday());
             log.info("Adding student {}", student.toString());
             return Response.status(Response.Status.CREATED)
                            .location(new URI("/students/" + student.getIndex()))
@@ -74,14 +75,14 @@ public class StudentsResource {
     @Produces(MediaType.APPLICATION_XML)
     @Path("{index}")
     public Response putStudent(Student updatedStudent, @PathParam("index") int index) {
-        boolean studentExists = repository.studentExists(index);
+        boolean studentExists = studentsRepository.ifStudentExists(index);
         if (!studentExists) {
             log.info("Skipping update. Student {} doesn't exists", index);
             return Response.status(Response.Status.NOT_FOUND)
                            .build();
         }
 
-        Student studentInDataBase = repository.getStudentByIndex(index);
+        Student studentInDataBase = studentsRepository.findStudentByIndex(index);
         log.info("Updating student {}", index);
 
 
@@ -104,13 +105,13 @@ public class StudentsResource {
     @DELETE
     @Path("{index}")
     public Response deleteStudent(@PathParam("index") int index) {
-        boolean studentExists = repository.studentExists(index);
+        boolean studentExists = studentsRepository.ifStudentExists(index);
         if (!studentExists) {
             log.info("Student {} deleted", index);
             return Response.status(Response.Status.NOT_FOUND)
                            .build();
         }
-        repository.deleteStudent(index);
+        studentsRepository.deleteStudentByIndex(index);
         return Response.status(Response.Status.NO_CONTENT)
                        .build();
     }

@@ -1,8 +1,8 @@
-package jerseyrest.resource;
+package jerseyrest.courses;
 
 
-import jerseyrest.database.Repository;
-import jerseyrest.models.Course;
+import jerseyrest.courses.CoursesRepository;
+import jerseyrest.courses.Course;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.GenericEntity;
@@ -14,12 +14,12 @@ import java.util.List;
 
 @Path("courses")
 public class CourseResource {
-    Repository repository = Repository.getInstance();
+    private CoursesRepository coursesRepository = CoursesRepository.getInstance();
 
     @GET
     @Produces(MediaType.APPLICATION_XML)
     public Response getAllCourses() {
-        List<Course> courses = repository.getCourseDatabase();
+        List<Course> courses = coursesRepository.findAllCourses();
         GenericEntity<List<Course>> entities = new GenericEntity<List<Course>>(courses) {
         };
 
@@ -32,7 +32,7 @@ public class CourseResource {
     @Path("{id}")
     @Produces(MediaType.APPLICATION_XML)
     public Response getCourse(@PathParam("id") int id) {
-        Course c = repository.getCourse(id);
+        Course c = coursesRepository.getCourse(id);
         if (c == null) {
             return Response.status(Response.Status.NOT_FOUND)
                            .build();
@@ -47,14 +47,14 @@ public class CourseResource {
     @Consumes(MediaType.APPLICATION_XML)
     public Response postCourse(Course c) throws
                                          URISyntaxException {
-        boolean courseExists = repository.courseExists(c.getId());
+        boolean courseExists = coursesRepository.courseExists(c.getId());
         if (courseExists) {
             return Response.status(Response.Status.FORBIDDEN)
                            .build();
         }
 
         if (c.getName() != null && c.getLecturer() != null) {
-            Course course = repository.addCourse(c.getName(), c.getLecturer());
+            Course course = coursesRepository.addCourse(c.getName(), c.getLecturer());
             return Response.status(Response.Status.CREATED)
                            .location(new URI("/courses/" + course.getId()))
                            .entity(course)
@@ -70,13 +70,13 @@ public class CourseResource {
     @Produces(MediaType.APPLICATION_XML)
     @Path("{id}")
     public Response putCourse(Course c, @PathParam("id") int id) {
-        boolean courseExists = repository.courseExists(id);
+        boolean courseExists = coursesRepository.courseExists(id);
         if (!courseExists) {
             return Response.status(Response.Status.NOT_FOUND)
                            .build();
         }
 
-        Course courseInDataBase = repository.getCourse(id);
+        Course courseInDataBase = coursesRepository.getCourse(id);
 
         if (isValid(c)) {
             courseInDataBase.setLecturer(c.getLecturer());
@@ -95,12 +95,12 @@ public class CourseResource {
     @DELETE
     @Path("{id}")
     public Response deleteCourse(@PathParam("id") int id) {
-        if (!repository.courseExists(id)) {
+        if (!coursesRepository.courseExists(id)) {
             return Response.status(Response.Status.NOT_FOUND)
                            .build();
         }
 
-        repository.deleteCourse(id);
+        coursesRepository.deleteCourse(id);
         return Response.status(Response.Status.NO_CONTENT)
                        .build();
     }

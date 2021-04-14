@@ -1,5 +1,6 @@
-package jerseyrest.models;
+package jerseyrest.students;
 
+import jerseyrest.courses.Course;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

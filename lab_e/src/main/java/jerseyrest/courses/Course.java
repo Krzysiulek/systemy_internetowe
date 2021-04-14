@@ -1,4 +1,4 @@
-package jerseyrest.models;
+package jerseyrest.courses;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

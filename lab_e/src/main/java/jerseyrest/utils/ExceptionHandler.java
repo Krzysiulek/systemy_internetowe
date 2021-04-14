@@ -1,4 +1,4 @@
-package jerseyrest;
+package jerseyrest.utils;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;

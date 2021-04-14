@@ -1,4 +1,4 @@
-package jerseyrest.models;
+package jerseyrest.students;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,6 +8,7 @@ import javax.xml.bind.annotation.XmlTransient;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @XmlRootElement(name = "student")
 @Data
@@ -34,6 +35,13 @@ public class Student {
 
     public void deleteGrade(Grade grade) {
         grades.remove(grade);
+    }
+
+    public void deleteGradeWithId(int courseId) {
+        grades = grades.stream()
+                       .filter(g -> g.getCourse()
+                                     .getId() != courseId)
+                       .collect(Collectors.toList());
     }
 
     // to hide field
