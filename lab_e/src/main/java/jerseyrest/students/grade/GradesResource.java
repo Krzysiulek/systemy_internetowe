@@ -57,7 +57,7 @@ public class GradesResource {
             Grade newGrade = studentsRepository.addStudentGrade(index, g);
             return Response.status(Response.Status.CREATED)
                            .entity(newGrade)
-                           .location(new URI("/students/" + index + "/grade/" + newGrade.getId()))
+                           .location(new URI("/students/" + index + "/grades/" + newGrade.getId()))
                            .build();
         }
         return Response.status(Response.Status.BAD_REQUEST)
