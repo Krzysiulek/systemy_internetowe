@@ -1,4 +1,4 @@
-package jerseyrest.students;
+package jerseyrest.students.grade;
 
 import jerseyrest.courses.Course;
 import lombok.AllArgsConstructor;

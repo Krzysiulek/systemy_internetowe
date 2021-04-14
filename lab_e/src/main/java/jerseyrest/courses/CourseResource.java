@@ -1,9 +1,6 @@
 package jerseyrest.courses;
 
 
-import jerseyrest.courses.CoursesRepository;
-import jerseyrest.courses.Course;
-
 import javax.ws.rs.*;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;

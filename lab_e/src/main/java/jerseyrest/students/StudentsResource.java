@@ -1,8 +1,9 @@
 package jerseyrest.students;
 
+import jerseyrest.students.student.Student;
+import jerseyrest.students.student.StudentsRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
-import jerseyrest.courses.CoursesRepository;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.GenericEntity;
@@ -15,7 +16,6 @@ import java.util.List;
 @Path("students")
 @Slf4j
 public class StudentsResource {
-    private CoursesRepository coursesRepository = CoursesRepository.getInstance();
     private StudentsRepository studentsRepository = StudentsRepository.getInstance();
 
 

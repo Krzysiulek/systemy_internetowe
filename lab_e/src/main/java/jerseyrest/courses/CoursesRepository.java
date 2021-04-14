@@ -1,7 +1,7 @@
 package jerseyrest.courses;
 
 
-import jerseyrest.students.StudentsRepository;
+import jerseyrest.students.student.StudentsRepository;
 
 import java.util.ArrayList;
 import java.util.List;

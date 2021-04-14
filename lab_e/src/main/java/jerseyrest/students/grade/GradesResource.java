@@ -1,6 +1,7 @@
-package jerseyrest.students;
+package jerseyrest.students.grade;
 
 import jerseyrest.courses.CoursesRepository;
+import jerseyrest.students.student.StudentsRepository;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.GenericEntity;
@@ -10,20 +11,20 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 
-@Path("students/{index}/grades")
+@Path("students/{index}/grade")
 public class GradesResource {
-    CoursesRepository coursesRepository = CoursesRepository.getInstance();
-    StudentsRepository studentsRepository = StudentsRepository.getInstance();
+    private CoursesRepository coursesRepository = CoursesRepository.getInstance();
+    private StudentsRepository studentsRepository = StudentsRepository.getInstance();
 
     @GET
     @Produces(MediaType.APPLICATION_XML)
     public Response getAllGrades(@PathParam("index") int index) {
         List<Grade> grades = studentsRepository.getStudentGrades(index);
         if (grades != null) {
-            GenericEntity<List<Grade>> grades_entity = new GenericEntity<List<Grade>>(grades) {
+            GenericEntity<List<Grade>> gradesEntity = new GenericEntity<>(grades) {
             };
             return Response.status(Response.Status.OK)
-                           .entity(grades_entity)
+                           .entity(gradesEntity)
                            .build();
         }
         return Response.status(Response.Status.NOT_FOUND)
@@ -56,7 +57,7 @@ public class GradesResource {
             Grade newGrade = studentsRepository.addStudentGrade(index, g);
             return Response.status(Response.Status.CREATED)
                            .entity(newGrade)
-                           .location(new URI("/students/" + index + "/grades/" + newGrade.getId()))
+                           .location(new URI("/students/" + index + "/grade/" + newGrade.getId()))
                            .build();
         }
         return Response.status(Response.Status.BAD_REQUEST)

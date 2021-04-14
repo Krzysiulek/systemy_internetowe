@@ -1,22 +1,23 @@
 package jerseyrest;
 
 import jerseyrest.courses.Course;
-import jerseyrest.students.Grade;
-import jerseyrest.students.Student;
 import jerseyrest.courses.CoursesRepository;
-import jerseyrest.students.StudentsRepository;
+import jerseyrest.students.grade.Grade;
+import jerseyrest.students.student.Student;
+import jerseyrest.students.student.StudentsRepository;
 import jerseyrest.utils.ExceptionHandler;
+import lombok.extern.slf4j.Slf4j;
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
 
-import java.io.IOException;
 import java.net.URI;
 import java.util.Date;
 
 
+@Slf4j
 public class Main {
-    public static final String BASE_URI = "http://localhost:8000/";
+    private static final String BASE_URI = "http://localhost:8000/";
 
 
     public static HttpServer startServer() {
@@ -26,15 +27,10 @@ public class Main {
     }
 
 
-    public static void main(String[] args) throws
-                                           IOException {
+    public static void main(String[] args) {
         initRepositories();
-
-        final HttpServer server = startServer();
-        System.out.println(String.format("Jersey app started with WADL available at "
-                                                 + "%sapplication.wadl\nHit enter to stop it...", BASE_URI));
-        System.in.read();
-        server.stop();
+        startServer();
+        log.info("Server started on {}", BASE_URI);
     }
 
 

@@ -1,6 +1,7 @@
-package jerseyrest.students;
+package jerseyrest.students.student;
 
 import jerseyrest.courses.CoursesRepository;
+import jerseyrest.students.grade.Grade;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -26,8 +27,8 @@ public class StudentsRepository {
         return repository;
     }
 
-    public Student addStudent(String name, String surname, Date birthDate) {
-        Student s = new Student(generateStudentIndex(), name, surname, birthDate);
+    public Student addStudent(String firstName, String lastName, Date birthDate) {
+        Student s = new Student(generateStudentIndex(), firstName, lastName, birthDate);
         students.add(s);
         return s;
     }

@@ -1,5 +1,6 @@
-package jerseyrest.students;
+package jerseyrest.students.student;
 
+import jerseyrest.students.grade.Grade;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -22,29 +23,31 @@ public class Student {
 
     private List<Grade> grades = new ArrayList<>();
 
-    public Student(int index, String firstName, String lastName, Date birthday) {
+    Student(int index, String firstName, String lastName, Date birthday) {
         this.index = index;
         this.firstName = firstName;
         this.lastName = lastName;
         this.birthday = birthday;
     }
 
-    public void addGrade(Grade grade) {
+    void addGrade(Grade grade) {
         grades.add(grade);
     }
 
-    public void deleteGrade(Grade grade) {
+    void deleteGrade(Grade grade) {
         grades.remove(grade);
     }
 
-    public void deleteGradeWithId(int courseId) {
+    void deleteGradeWithId(int courseId) {
         grades = grades.stream()
                        .filter(g -> g.getCourse()
                                      .getId() != courseId)
                        .collect(Collectors.toList());
     }
 
-    // to hide field
+    /**
+     * Ukrywa pole
+     */
     @XmlTransient
     public List<Grade> getGrades() {
         return grades;
