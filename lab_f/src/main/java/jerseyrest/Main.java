@@ -9,6 +9,7 @@ import jerseyrest.utils.ExceptionHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
+import org.glassfish.jersey.linking.DeclarativeLinkingFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 
 import java.net.URI;
@@ -21,8 +22,11 @@ public class Main {
 
 
     public static HttpServer startServer() {
-        final ResourceConfig rc = new ResourceConfig().packages("jerseyrest");
-        rc.register(new ExceptionHandler());
+        final ResourceConfig rc = new ResourceConfig()
+                .packages("jerseyrest")
+                .register(DeclarativeLinkingFeature.class)
+                .register(new ExceptionHandler());
+
         return GrizzlyHttpServerFactory.createHttpServer(URI.create(BASE_URI), rc);
     }
 
@@ -44,8 +48,8 @@ public class Main {
         Student student1 = instance.addStudent("Kris", "Brown", new Date());
         Student student2 = instance.addStudent("Jan", "Nowak", new Date());
 
-        Grade grade1 = new Grade(0, 3.5, new Date(), course1);
-        Grade grade2 = new Grade(0, 4.5, new Date(), course2);
+        Grade grade1 = new Grade(0, student1.getIndex(), 3.5, new Date(), course1);
+        Grade grade2 = new Grade(0, student2.getIndex(), 4.5, new Date(), course2);
 
         instance.addStudentGrade(student1.getIndex(), grade1);
         instance.addStudentGrade(student2.getIndex(), grade2);

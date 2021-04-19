@@ -22,6 +22,7 @@ public class CoursesRepository {
     }
 
     public List<Course> findAllCourses() {
+        clearCoursesLinks();
         return courseDatabase;
     }
 
@@ -32,6 +33,7 @@ public class CoursesRepository {
     }
 
     public Course getCourse(int id) {
+        clearCoursesLinks();
         return this.courseDatabase.stream()
                                   .filter(c -> c.getId() == id)
                                   .findFirst()
@@ -48,6 +50,12 @@ public class CoursesRepository {
 
         StudentsRepository.getInstance()
                           .deleteAllGradesWhere(courseId);
+    }
+
+    private void clearCoursesLinks() {
+        courseDatabase
+                .forEach(c -> c.getLinks()
+                               .clear());
     }
 
     private static int generateCourseId() {

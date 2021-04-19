@@ -20,7 +20,7 @@ public class StudentsResource {
 
 
     @GET
-    @Produces(MediaType.APPLICATION_XML)
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Response getAllStudents() {
         List<Student> students = studentsRepository.findAllStudents();
         log.info("Gettings all ({}) students", students.size());
@@ -34,7 +34,7 @@ public class StudentsResource {
 
     @GET
     @Path("/{index}")
-    @Produces(MediaType.APPLICATION_XML)
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Response getStudent(@PathParam("index") int index) {
         if (studentsRepository.ifStudentExists(index)) {
             Student student = studentsRepository.findStudentByIndex(index);
@@ -49,8 +49,8 @@ public class StudentsResource {
     }
 
     @POST
-    @Consumes(MediaType.APPLICATION_XML)
-    @Produces(MediaType.APPLICATION_XML)
+    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Response postStudent(Student newStudent) throws
                                                     URISyntaxException {
 
@@ -71,8 +71,8 @@ public class StudentsResource {
     }
 
     @PUT
-    @Consumes(MediaType.APPLICATION_XML)
-    @Produces(MediaType.APPLICATION_XML)
+    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     @Path("{index}")
     public Response putStudent(Student updatedStudent, @PathParam("index") int index) {
         boolean studentExists = studentsRepository.ifStudentExists(index);

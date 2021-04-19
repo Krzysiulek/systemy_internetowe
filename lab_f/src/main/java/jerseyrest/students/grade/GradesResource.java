@@ -17,7 +17,7 @@ public class GradesResource {
     private StudentsRepository studentsRepository = StudentsRepository.getInstance();
 
     @GET
-    @Produces(MediaType.APPLICATION_XML)
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Response getAllGrades(@PathParam("index") int index) {
         List<Grade> grades = studentsRepository.getStudentGrades(index);
         if (grades != null) {
@@ -33,7 +33,7 @@ public class GradesResource {
 
     @GET
     @Path("{gradeId}")
-    @Produces(MediaType.APPLICATION_XML)
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Response getGrade(@PathParam("index") int index, @PathParam("gradeId") int gradeId) {
         Grade grade = studentsRepository.getStudentGrade(index, gradeId);
         if (studentsRepository.gradeExists(index, gradeId)) {
@@ -48,8 +48,8 @@ public class GradesResource {
     }
 
     @POST
-    @Consumes(MediaType.APPLICATION_XML)
-    @Produces(MediaType.APPLICATION_XML)
+    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Response postGrade(Grade g, @PathParam("index") int index) throws
                                                                       URISyntaxException {
 
@@ -66,8 +66,8 @@ public class GradesResource {
 
     @PUT
     @Path("{gradeId}")
-    @Produces(MediaType.APPLICATION_XML)
-    @Consumes(MediaType.APPLICATION_XML)
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Response putGrade(Grade newGrade, @PathParam("index") int index, @PathParam("gradeId") int gradeId) {
         boolean gradeExists = studentsRepository.gradeExists(index, gradeId);
         if (!gradeExists) {

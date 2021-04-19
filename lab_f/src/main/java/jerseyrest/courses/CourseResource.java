@@ -14,10 +14,10 @@ public class CourseResource {
     private CoursesRepository coursesRepository = CoursesRepository.getInstance();
 
     @GET
-    @Produces(MediaType.APPLICATION_XML)
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Response getAllCourses() {
         List<Course> courses = coursesRepository.findAllCourses();
-        GenericEntity<List<Course>> entities = new GenericEntity<List<Course>>(courses) {
+        GenericEntity<List<Course>> entities = new GenericEntity<>(courses) {
         };
 
         return Response.status(Response.Status.OK)
@@ -27,7 +27,7 @@ public class CourseResource {
 
     @GET
     @Path("{id}")
-    @Produces(MediaType.APPLICATION_XML)
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Response getCourse(@PathParam("id") int id) {
         Course c = coursesRepository.getCourse(id);
         if (c == null) {
@@ -40,8 +40,8 @@ public class CourseResource {
     }
 
     @POST
-    @Produces(MediaType.APPLICATION_XML)
-    @Consumes(MediaType.APPLICATION_XML)
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Response postCourse(Course c) throws
                                          URISyntaxException {
         boolean courseExists = coursesRepository.courseExists(c.getId());
@@ -63,8 +63,8 @@ public class CourseResource {
 
 
     @PUT
-    @Consumes(MediaType.APPLICATION_XML)
-    @Produces(MediaType.APPLICATION_XML)
+    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     @Path("{id}")
     public Response putCourse(Course c, @PathParam("id") int id) {
         boolean courseExists = coursesRepository.courseExists(id);

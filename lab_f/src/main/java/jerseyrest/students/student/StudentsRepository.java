@@ -43,6 +43,7 @@ public class StudentsRepository {
     }
 
     public Student findStudentByIndex(int index) {
+        cleanLinks();
         return students.stream()
                        .filter(student -> student.getIndex() == index)
                        .findFirst()
@@ -50,6 +51,7 @@ public class StudentsRepository {
     }
 
     public Grade getStudentGrade(int index, int gradeId) {
+        cleanLinks();
         List<Grade> grades = getStudentGrades(index);
         return grades.stream()
                      .filter(g -> g.getId() == gradeId)
@@ -94,6 +96,7 @@ public class StudentsRepository {
     }
 
     public List<Student> findAllStudents() {
+        cleanLinks();
         return students;
     }
 
@@ -109,7 +112,6 @@ public class StudentsRepository {
         return value >= 2.0 && value <= 5.0 && value % 0.5 == 0;
     }
 
-
     private static int createGradeId() {
         gradesCounter++;
         return gradesCounter;
@@ -118,5 +120,20 @@ public class StudentsRepository {
     private static int generateStudentIndex() {
         indexCounter++;
         return indexCounter;
+    }
+
+    private void cleanLinks() {
+        students
+                .forEach(s -> {
+                    s.getLinks()
+                     .clear();
+                    s.getGrades()
+                     .forEach(g -> g.getCourse()
+                                    .getLinks()
+                                    .clear());
+                    s.getGrades()
+                     .forEach(g -> g.getLinks()
+                                    .clear());
+                });
     }
 }
