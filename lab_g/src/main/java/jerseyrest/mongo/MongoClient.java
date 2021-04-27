@@ -7,7 +7,6 @@ import dev.morphia.Datastore;
 import dev.morphia.Morphia;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
 
 import static jerseyrest.mongo.MongoConstants.*;
@@ -20,10 +19,10 @@ public class MongoClient {
 
     public static Datastore getDatastore() {
         if (datastore == null) {
-            CodecRegistry pojoCodecRegistry = fromRegistries(MongoClientSettings.getDefaultCodecRegistry(),
-                                                             fromProviders(PojoCodecProvider.builder()
-                                                                                            .automatic(true)
-                                                                                            .build()));
+            var pojoCodecRegistry = fromRegistries(MongoClientSettings.getDefaultCodecRegistry(),
+                                                   fromProviders(PojoCodecProvider.builder()
+                                                                                  .automatic(true)
+                                                                                  .build()));
 
             MongoClientSettings settings = MongoClientSettings.builder()
                                                               .codecRegistry(pojoCodecRegistry)

@@ -1,5 +1,6 @@
 package jerseyrest.students.grade;
 
+import dev.morphia.annotations.Reference;
 import jerseyrest.courses.Course;
 import lombok.*;
 import org.glassfish.jersey.linking.Binding;
@@ -43,7 +44,7 @@ public class Grade {
     @NonNull
     @Getter
     @Setter
-//    @Reference
+    @Reference
     private Course course;
 
     @XmlTransient

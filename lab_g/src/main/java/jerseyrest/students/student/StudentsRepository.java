@@ -17,7 +17,7 @@ public class StudentsRepository {
     private static StudentsRepository repository;
 
     private static final Datastore datastore = MongoClient.getDatastore();
-    private IncrementerUtils incrementerUtils = new IncrementerUtils();
+    private final IncrementerUtils incrementerUtils = new IncrementerUtils();
 
     public static StudentsRepository getInstance() {
         if (repository == null) {
