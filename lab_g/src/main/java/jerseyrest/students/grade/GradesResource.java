@@ -110,11 +110,9 @@ public class GradesResource {
     }
 
     private boolean isGradeValid(Grade grade) {
-        return null != grade.getCourse()
-                && grade.getValue() >= 2.0 && grade.getValue() <= 5.0
-                && grade.getValue() % 0.5 == 0
-                && coursesRepository.courseExists(grade.getCourse()
-                                                       .getId());
+        return grade.getValue() >= 2.0 && grade.getValue() <= 5.0 && grade.getValue() % 0.5 == 0 && coursesRepository.courseExists(
+                grade.getCourse()
+                     .getId());
     }
 
 

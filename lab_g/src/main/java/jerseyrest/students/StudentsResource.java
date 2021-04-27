@@ -1,7 +1,6 @@
 package jerseyrest.students;
 
 import jerseyrest.students.student.Student;
-import jerseyrest.students.student.StudentResponse;
 import jerseyrest.students.student.StudentsRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -12,9 +11,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Path("students")
 @Slf4j

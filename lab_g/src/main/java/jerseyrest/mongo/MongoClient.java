@@ -5,7 +5,6 @@ import com.mongodb.MongoClientSettings;
 import com.mongodb.client.MongoClients;
 import dev.morphia.Datastore;
 import dev.morphia.Morphia;
-import jerseyrest.students.student.StudentsRepository;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.bson.codecs.configuration.CodecRegistry;

@@ -4,9 +4,7 @@ package jerseyrest.courses;
 import dev.morphia.Datastore;
 import jerseyrest.idincrementer.IncrementerUtils;
 import jerseyrest.mongo.MongoClient;
-import jerseyrest.students.student.StudentsRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class CoursesRepository {
