@@ -36,9 +36,6 @@ public class MongoClient {
                     .createDatastore(MongoClients.create(settings), STUDENTS_COLLECTION);
             datastore.getMapper()
                      .mapPackage(PACKAGE_TO_SCAN);
-
-            datastore.getDatabase()
-                     .drop();
         }
 
         return datastore;

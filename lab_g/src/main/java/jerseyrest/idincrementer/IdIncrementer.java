@@ -4,11 +4,7 @@ import dev.morphia.annotations.Entity;
 import dev.morphia.annotations.Id;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.bson.types.ObjectId;
-
-import javax.validation.constraints.NotNull;
 
 @AllArgsConstructor
 @Data

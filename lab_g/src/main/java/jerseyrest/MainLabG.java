@@ -1,9 +1,5 @@
 package jerseyrest;
 
-import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoClients;
-import dev.morphia.Datastore;
-import dev.morphia.Morphia;
 import jerseyrest.courses.Course;
 import jerseyrest.courses.CoursesRepository;
 import jerseyrest.students.grade.Grade;
@@ -35,41 +31,32 @@ public class MainLabG {
 
 
     public static void main(String[] args) {
-//        initMongoDb();
         initRepositories();
         startServer();
         log.info("Server started on {}", BASE_URI);
     }
 
-//    private static void initMongoDb() {
-//        var mongoClient = MongoClients.create("mongodb://localhost:8004");
-//        mongoClient.getDatabase("test");
-//
-//        final var datastore = Morphia.createDatastore(mongoClient, "test");
-//
-//        // tell Morphia where to find your classes
-//        // can be called multiple times with different packages or classes
-//        datastore.getMapper()
-//                 .mapPackage("jerseyrest");
-//
-//        datastore.ensureIndexes();
-//    }
-
     private static void initRepositories() {
         CoursesRepository coursesRepository = CoursesRepository.getInstance();
-        StudentsRepository instance = StudentsRepository.getInstance();
+        StudentsRepository studentsRepository = StudentsRepository.getInstance();
 
-        Course course1 = coursesRepository.addCourse("SINT", "JanNowak");
-        Course course2 = coursesRepository.addCourse("MISIO", "Kowalksi");
+        boolean shouldInit = coursesRepository.findAllCourses()
+                                              .isEmpty() || studentsRepository.findAllStudents()
+                                                                              .isEmpty();
 
-        Student student1 = instance.addStudent("Kris", "Brown", new Date());
-        Student student2 = instance.addStudent("Jan", "Nowak", new Date());
+        if (shouldInit) {
+            Course course1 = coursesRepository.addCourse("SINT", "JanNowak");
+            Course course2 = coursesRepository.addCourse("MISIO", "Kowalksi");
 
-        Grade grade1 = new Grade(0, student1.getIndex(), 3.5, new Date(), course1);
-        Grade grade2 = new Grade(0, student2.getIndex(), 4.5, new Date(), course2);
+            Student student1 = studentsRepository.addStudent("Kris", "Brown", new Date());
+            Student student2 = studentsRepository.addStudent("Jan", "Nowak", new Date());
 
-        instance.addStudentGrade(student1.getIndex(), grade1);
-        instance.addStudentGrade(student2.getIndex(), grade2);
+            Grade grade1 = new Grade(0, student1.getIndex(), 3.5, new Date(), course1);
+            Grade grade2 = new Grade(0, student2.getIndex(), 4.5, new Date(), course2);
+
+            studentsRepository.addStudentGrade(student1.getIndex(), grade1);
+            studentsRepository.addStudentGrade(student2.getIndex(), grade2);
+        }
     }
 }
 
