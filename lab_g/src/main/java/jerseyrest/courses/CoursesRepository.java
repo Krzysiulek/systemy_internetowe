@@ -2,6 +2,7 @@ package jerseyrest.courses;
 
 
 import dev.morphia.Datastore;
+import jerseyrest.idincrementer.IncrementerUtils;
 import jerseyrest.mongo.MongoClient;
 import jerseyrest.students.student.StudentsRepository;
 
@@ -10,8 +11,8 @@ import java.util.List;
 
 public class CoursesRepository {
     private static CoursesRepository coursesRepository;
-    private static int courseCounter = 0;
     private final Datastore datastore = MongoClient.getDatastore();
+    private IncrementerUtils incrementerUtils = new IncrementerUtils();
 
     public static CoursesRepository getInstance() {
         if (coursesRepository == null) {
@@ -27,7 +28,7 @@ public class CoursesRepository {
     }
 
     public Course addCourse(String name, String teacher) {
-        Course c = new Course(generateCourseId(), name, teacher);
+        Course c = new Course(incrementerUtils.createCourseId(), name, teacher);
         datastore.save(c);
         return c;
     }
@@ -47,10 +48,5 @@ public class CoursesRepository {
     public void deleteCourse(int courseId) {
         datastore.delete(getCourse(courseId));
 
-    }
-
-    private static int generateCourseId() {
-        courseCounter++;
-        return courseCounter;
     }
 }

@@ -53,14 +53,10 @@ public class CourseResource {
                            .build();
         }
 
-        if (c.getName() != null && c.getLecturer() != null) {
-            Course course = coursesRepository.addCourse(c.getName(), c.getLecturer());
-            return Response.status(Response.Status.CREATED)
-                           .location(new URI("/courses/" + course.getId()))
-                           .entity(course)
-                           .build();
-        }
-        return Response.status(Response.Status.BAD_REQUEST)
+        Course course = coursesRepository.addCourse(c.getName(), c.getLecturer());
+        return Response.status(Response.Status.CREATED)
+                       .location(new URI("/courses/" + course.getId()))
+                       .entity(course)
                        .build();
     }
 

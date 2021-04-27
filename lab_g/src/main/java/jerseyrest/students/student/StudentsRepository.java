@@ -3,6 +3,8 @@ package jerseyrest.students.student;
 import dev.morphia.Datastore;
 import jerseyrest.courses.Course;
 import jerseyrest.courses.CoursesRepository;
+import jerseyrest.idincrementer.IdIncrementer;
+import jerseyrest.idincrementer.IncrementerUtils;
 import jerseyrest.mongo.MongoClient;
 import jerseyrest.students.grade.Grade;
 import lombok.AccessLevel;
@@ -16,45 +18,20 @@ import java.util.List;
 public class StudentsRepository {
     private static StudentsRepository repository;
 
-    private static int indexCounter = 0;
-    private static int gradesCounter = 0;
-    private static final Datastore studentsDatastore = MongoClient.getDatastore();
+    private static final Datastore datastore = MongoClient.getDatastore();
+    private IncrementerUtils incrementerUtils = new IncrementerUtils();
 
     public static StudentsRepository getInstance() {
         if (repository == null) {
             repository = new StudentsRepository();
-            indexCounter = repository.findAllStudents()
-                                     .stream()
-                                     .mapToInt(Student::getIndex)
-                                     .max()
-                                     .orElse(0) + 1;
-
-            gradesCounter = repository.findAllStudents()
-                                      .stream()
-                                      .map(Student::getGrades)
-                                      .flatMap(Collection::stream)
-                                      .mapToInt(Grade::getId)
-                                      .max()
-                                      .orElse(0) + 1;
-
         }
 
         return repository;
     }
 
-    private static int createGradeId() {
-        gradesCounter++;
-        return gradesCounter;
-    }
-
-    private static int generateStudentIndex() {
-        indexCounter++;
-        return indexCounter;
-    }
-
     public Student addStudent(String firstName, String lastName, Date birthDate) {
-        Student s = new Student(generateStudentIndex(), firstName, lastName, birthDate);
-        studentsDatastore.save(s);
+        Student s = new Student(incrementerUtils.createIndexId(), firstName, lastName, birthDate);
+        datastore.save(s);
         return s;
     }
 
@@ -64,7 +41,7 @@ public class StudentsRepository {
                                            .findFirst()
                                            .get();
 
-        studentsDatastore.delete(student);
+        datastore.delete(student);
     }
 
     public boolean ifStudentExists(int index) {
@@ -91,7 +68,7 @@ public class StudentsRepository {
         Student student = findStudentByIndex(index);
         Grade studentGrade = getStudentGrade(index, gradeId);
         student.deleteGrade(studentGrade);
-        studentsDatastore.save(student);
+        datastore.save(student);
     }
 
     public Grade addStudentGrade(int index, Grade grade) {
@@ -101,7 +78,7 @@ public class StudentsRepository {
 
         CoursesRepository coursesCoursesRepository = CoursesRepository.getInstance();
 
-        grade.setId(createGradeId());
+        grade.setId(incrementerUtils.createGradeId());
         grade.setStudentIndex(index);
         grade.getLinks()
              .clear();
@@ -109,7 +86,7 @@ public class StudentsRepository {
                                                                 .getId()));
         Student studentByIndex = findStudentByIndex(index);
         studentByIndex.addGrade(grade);
-        studentsDatastore.save(studentByIndex);
+        datastore.save(studentByIndex);
         return grade;
     }
 
@@ -119,9 +96,9 @@ public class StudentsRepository {
     }
 
     public List<Student> findAllStudents() {
-        return studentsDatastore.find(Student.class)
-                                .iterator()
-                                .toList();
+        return datastore.find(Student.class)
+                        .iterator()
+                        .toList();
     }
 
     public boolean gradeExists(int index, int gradeId) {
@@ -141,7 +118,7 @@ public class StudentsRepository {
         studentInDataBase.setLastName(updatedStudent.getLastName());
         studentInDataBase.setBirthday(updatedStudent.getBirthday());
 
-        studentsDatastore.save(studentInDataBase);
+        datastore.save(studentInDataBase);
     }
 
     public void updateGrade(int index, int gradeId, Grade newGrade, Course newCourse) {
@@ -156,7 +133,7 @@ public class StudentsRepository {
         grade.setDate(newGrade.getDate());
         grade.setCourse(newCourse);
 
-        studentsDatastore.save(student);
+        datastore.save(student);
     }
 
     public void deleteGradesWhereCourseId(int id) {
@@ -165,7 +142,7 @@ public class StudentsRepository {
         allStudents
                 .forEach(student -> {
                     student.deleteGradeWithId(id);
-                    studentsDatastore.save(student);
+                    datastore.save(student);
                 });
     }
 }
