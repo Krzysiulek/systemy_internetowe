@@ -1,8 +1,14 @@
 package jerseyrest.students.student;
 
+import dev.morphia.annotations.Entity;
+import dev.morphia.annotations.Id;
+import dev.morphia.annotations.Reference;
 import jerseyrest.students.StudentsResource;
 import jerseyrest.students.grade.Grade;
+import jerseyrest.utils.ObjectIdJaxbAdapter;
 import lombok.*;
+import org.bson.codecs.pojo.annotations.BsonIgnore;
+import org.bson.types.ObjectId;
 import org.glassfish.jersey.linking.InjectLink;
 import org.glassfish.jersey.linking.InjectLinks;
 
@@ -14,10 +20,17 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Entity("students")
 @XmlRootElement(name = "student")
 @NoArgsConstructor
+@AllArgsConstructor
 @RequiredArgsConstructor
 public class Student {
+    @Id
+    @Setter
+    @XmlJavaTypeAdapter(ObjectIdJaxbAdapter.class)
+    private ObjectId objectId;
+
     @NonNull
     @Getter
     @Setter
@@ -38,6 +51,8 @@ public class Student {
     @Setter
     private Date birthday;
 
+    //    @Reference
+    @Setter
     private List<Grade> grades = new ArrayList<>();
 
     void addGrade(Grade grade) {
@@ -63,6 +78,11 @@ public class Student {
         return grades;
     }
 
+    @XmlTransient
+    public String getObjectId() {
+        return objectId.toString();
+    }
+
     @InjectLinks({
             @InjectLink(resource = StudentsResource.class, method = "getStudent", rel = "self"),
             @InjectLink(resource = StudentsResource.class, method = "getAllStudents", rel = "parent"),
@@ -71,5 +91,6 @@ public class Student {
     @XmlElementWrapper(name = "links")
     @XmlJavaTypeAdapter(Link.JaxbAdapter.class)
     @Getter
+    @BsonIgnore
     private final List<Link> links = new ArrayList<>();
 }

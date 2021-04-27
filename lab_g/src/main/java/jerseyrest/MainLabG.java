@@ -1,5 +1,9 @@
 package jerseyrest;
 
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
+import dev.morphia.Datastore;
+import dev.morphia.Morphia;
 import jerseyrest.courses.Course;
 import jerseyrest.courses.CoursesRepository;
 import jerseyrest.students.grade.Grade;
@@ -17,9 +21,8 @@ import java.util.Date;
 
 
 @Slf4j
-public class Main {
+public class MainLabG {
     private static final String BASE_URI = "http://localhost:8000/";
-
 
     public static HttpServer startServer() {
         final ResourceConfig rc = new ResourceConfig()
@@ -32,11 +35,25 @@ public class Main {
 
 
     public static void main(String[] args) {
+//        initMongoDb();
         initRepositories();
         startServer();
         log.info("Server started on {}", BASE_URI);
     }
 
+//    private static void initMongoDb() {
+//        var mongoClient = MongoClients.create("mongodb://localhost:8004");
+//        mongoClient.getDatabase("test");
+//
+//        final var datastore = Morphia.createDatastore(mongoClient, "test");
+//
+//        // tell Morphia where to find your classes
+//        // can be called multiple times with different packages or classes
+//        datastore.getMapper()
+//                 .mapPackage("jerseyrest");
+//
+//        datastore.ensureIndexes();
+//    }
 
     private static void initRepositories() {
         CoursesRepository coursesRepository = CoursesRepository.getInstance();

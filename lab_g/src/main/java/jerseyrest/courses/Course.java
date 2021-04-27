@@ -1,6 +1,11 @@
 package jerseyrest.courses;
 
+import dev.morphia.annotations.Entity;
+import dev.morphia.annotations.Id;
+import jerseyrest.utils.ObjectIdJaxbAdapter;
 import lombok.*;
+import org.bson.codecs.pojo.annotations.BsonIgnore;
+import org.bson.types.ObjectId;
 import org.glassfish.jersey.linking.Binding;
 import org.glassfish.jersey.linking.InjectLink;
 import org.glassfish.jersey.linking.InjectLinks;
@@ -11,11 +16,16 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
+@Entity("courses")
 @XmlRootElement(name = "course")
 @NoArgsConstructor
-@AllArgsConstructor
 @RequiredArgsConstructor
 public class Course {
+    @Id
+    @Setter
+    @XmlJavaTypeAdapter(ObjectIdJaxbAdapter.class)
+    private ObjectId objectId;
+
     @NonNull
     @Getter
     @Setter
@@ -31,6 +41,10 @@ public class Course {
     @Setter
     private String lecturer;
 
+    @XmlTransient
+    public ObjectId getObjectId() {
+        return objectId;
+    }
 
     @InjectLinks({
             @InjectLink(resource = CourseResource.class, method = "getCourse", bindings = @Binding(name = "id", value = "${instance.id}"), rel = "self"),
@@ -40,5 +54,6 @@ public class Course {
     @XmlElementWrapper(name = "links")
     @XmlJavaTypeAdapter(Link.JaxbAdapter.class)
     @Getter
+//    @BsonIgnore
     private final List<Link> links = new ArrayList<>();
 }
