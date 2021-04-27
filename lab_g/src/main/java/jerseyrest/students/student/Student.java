@@ -1,8 +1,6 @@
 package jerseyrest.students.student;
 
-import dev.morphia.annotations.Entity;
-import dev.morphia.annotations.Id;
-import dev.morphia.annotations.Reference;
+import dev.morphia.annotations.*;
 import jerseyrest.students.StudentsResource;
 import jerseyrest.students.grade.Grade;
 import jerseyrest.utils.ObjectIdJaxbAdapter;
@@ -25,10 +23,10 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @AllArgsConstructor
 @RequiredArgsConstructor
+@Indexes(@Index(options = @IndexOptions(name = "index"), fields = @Field("index")))
 public class Student {
     @Id
     @Setter
-    @XmlJavaTypeAdapter(ObjectIdJaxbAdapter.class)
     private ObjectId objectId;
 
     @NonNull
@@ -51,7 +49,6 @@ public class Student {
     @Setter
     private Date birthday;
 
-    //    @Reference
     @Setter
     private List<Grade> grades = new ArrayList<>();
 
@@ -60,7 +57,7 @@ public class Student {
     }
 
     void deleteGrade(Grade grade) {
-        grades.remove(grade);
+        grades.removeIf(g -> g.getId() == grade.getId());
     }
 
     void deleteGradeWithId(int courseId) {

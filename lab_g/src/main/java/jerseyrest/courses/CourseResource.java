@@ -1,6 +1,8 @@
 package jerseyrest.courses;
 
 
+import jerseyrest.students.student.StudentsRepository;
+
 import javax.ws.rs.*;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
@@ -12,6 +14,7 @@ import java.util.List;
 @Path("courses")
 public class CourseResource {
     private final CoursesRepository coursesRepository = CoursesRepository.getInstance();
+    private final StudentsRepository studentsRepository = StudentsRepository.getInstance();
 
     @GET
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
@@ -98,6 +101,7 @@ public class CourseResource {
         }
 
         coursesRepository.deleteCourse(id);
+        studentsRepository.deleteGradesWhereCourseId(id);
         return Response.status(Response.Status.NO_CONTENT)
                        .build();
     }

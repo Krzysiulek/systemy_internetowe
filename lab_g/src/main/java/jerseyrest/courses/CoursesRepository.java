@@ -1,6 +1,8 @@
 package jerseyrest.courses;
 
 
+import dev.morphia.Datastore;
+import jerseyrest.mongo.MongoClient;
 import jerseyrest.students.student.StudentsRepository;
 
 import java.util.ArrayList;
@@ -8,11 +10,8 @@ import java.util.List;
 
 public class CoursesRepository {
     private static CoursesRepository coursesRepository;
-
     private static int courseCounter = 0;
-
-    private final List<Course> courseDatabase = new ArrayList<>();
-
+    private final Datastore datastore = MongoClient.getDatastore();
 
     public static CoursesRepository getInstance() {
         if (coursesRepository == null) {
@@ -22,40 +21,32 @@ public class CoursesRepository {
     }
 
     public List<Course> findAllCourses() {
-        clearCoursesLinks();
-        return courseDatabase;
+        return datastore.find(Course.class)
+                        .iterator()
+                        .toList();
     }
 
     public Course addCourse(String name, String teacher) {
         Course c = new Course(generateCourseId(), name, teacher);
-        this.courseDatabase.add(c);
+        datastore.save(c);
         return c;
     }
 
     public Course getCourse(int id) {
-        clearCoursesLinks();
-        return this.courseDatabase.stream()
-                                  .filter(c -> c.getId() == id)
-                                  .findFirst()
-                                  .orElse(null);
+        return findAllCourses().stream()
+                               .filter(c -> c.getId() == id)
+                               .findFirst()
+                               .orElse(null);
     }
 
     public boolean courseExists(long id) {
-        return courseDatabase.stream()
-                             .anyMatch(course -> course.getId() == id);
+        return findAllCourses().stream()
+                               .anyMatch(course -> course.getId() == id);
     }
 
     public void deleteCourse(int courseId) {
-        courseDatabase.removeIf(course -> course.getId() == courseId);
+        datastore.delete(getCourse(courseId));
 
-        StudentsRepository.getInstance()
-                          .deleteAllGradesWhere(courseId);
-    }
-
-    private void clearCoursesLinks() {
-        courseDatabase
-                .forEach(c -> c.getLinks()
-                               .clear());
     }
 
     private static int generateCourseId() {

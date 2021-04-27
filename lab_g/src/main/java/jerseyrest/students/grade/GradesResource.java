@@ -1,5 +1,6 @@
 package jerseyrest.students.grade;
 
+import jerseyrest.courses.Course;
 import jerseyrest.courses.CoursesRepository;
 import jerseyrest.students.student.StudentsRepository;
 
@@ -69,6 +70,8 @@ public class GradesResource {
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Response putGrade(Grade newGrade, @PathParam("index") int index, @PathParam("gradeId") int gradeId) {
+        newGrade.getLinks()
+                .clear();
         boolean gradeExists = studentsRepository.gradeExists(index, gradeId);
         if (!gradeExists) {
             return Response.status(Response.Status.NOT_FOUND)
@@ -79,16 +82,14 @@ public class GradesResource {
         Grade gradeInDataBase = studentsRepository.getStudentGrade(index, gradeId);
 
         if (isGradeValid(newGrade)) {
-            gradeInDataBase.setValue(newGrade.getValue());
-            gradeInDataBase.setDate(newGrade.getDate());
-            gradeInDataBase.setCourse(coursesRepository.getCourse(newGrade.getCourse()
-                                                                          .getId()));
+            Course newCourse = coursesRepository.getCourse(newGrade.getCourse()
+                                                                   .getId());
+            studentsRepository.updateGrade(index, gradeId, newGrade, newCourse);
 
             return Response.status(Response.Status.NO_CONTENT)
                            .entity(gradeInDataBase)
                            .build();
         }
-
 
         return Response.status(Response.Status.BAD_REQUEST)
                        .entity(gradeInDataBase)

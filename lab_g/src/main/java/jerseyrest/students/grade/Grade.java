@@ -2,6 +2,7 @@ package jerseyrest.students.grade;
 
 import dev.morphia.annotations.Entity;
 import dev.morphia.annotations.Id;
+import dev.morphia.annotations.Reference;
 import jerseyrest.courses.Course;
 import jerseyrest.utils.ObjectIdJaxbAdapter;
 import lombok.*;
@@ -17,15 +18,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-@Entity("grades")
+//@Entity("grades")
 @XmlRootElement(name = "grade")
 @NoArgsConstructor
 @RequiredArgsConstructor
 public class Grade {
-    @Id
-    @Setter
-    @XmlJavaTypeAdapter(ObjectIdJaxbAdapter.class)
-    private Object objectId;
 
     @NonNull
     @Getter
@@ -49,16 +46,12 @@ public class Grade {
     @NonNull
     @Getter
     @Setter
+//    @Reference
     private Course course;
 
     @XmlTransient
     public int getStudentIndex() {
         return studentIndex;
-    }
-
-    @XmlTransient
-    public Object getObjectId() {
-        return objectId;
     }
 
     @InjectLinks({

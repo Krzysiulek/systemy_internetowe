@@ -23,7 +23,6 @@ import java.util.List;
 public class Course {
     @Id
     @Setter
-    @XmlJavaTypeAdapter(ObjectIdJaxbAdapter.class)
     private ObjectId objectId;
 
     @NonNull
@@ -41,10 +40,10 @@ public class Course {
     @Setter
     private String lecturer;
 
-    @XmlTransient
-    public ObjectId getObjectId() {
-        return objectId;
-    }
+//    @XmlTransient
+public String getObjectId() {
+    return objectId.toString();
+}
 
     @InjectLinks({
             @InjectLink(resource = CourseResource.class, method = "getCourse", bindings = @Binding(name = "id", value = "${instance.id}"), rel = "self"),

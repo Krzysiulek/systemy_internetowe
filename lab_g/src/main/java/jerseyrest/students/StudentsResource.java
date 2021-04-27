@@ -27,7 +27,6 @@ public class StudentsResource {
     public Response getAllStudents() {
         List<Student> students = studentsRepository.findAllStudents();
         log.info("Gettings all ({}) students", students.size());
-
         GenericEntity<List<Student>> entities = new GenericEntity<>(students) {
         };
 
@@ -91,9 +90,7 @@ public class StudentsResource {
 
 
         if (isStudentValid(updatedStudent)) {
-            studentInDataBase.setFirstName(updatedStudent.getFirstName());
-            studentInDataBase.setLastName(updatedStudent.getLastName());
-            studentInDataBase.setBirthday(updatedStudent.getBirthday());
+            studentsRepository.updateStudent(studentInDataBase, updatedStudent);
             log.info("Student {} updated", index);
             return Response.status(Response.Status.NO_CONTENT)
                            .entity(studentInDataBase)
