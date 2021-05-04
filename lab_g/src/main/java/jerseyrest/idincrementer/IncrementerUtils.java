@@ -1,6 +1,8 @@
 package jerseyrest.idincrementer;
 
 import dev.morphia.Datastore;
+import dev.morphia.ModifyOptions;
+import dev.morphia.query.experimental.updates.UpdateOperators;
 import jerseyrest.mongo.MongoClient;
 import lombok.extern.slf4j.Slf4j;
 
@@ -18,29 +20,20 @@ public class IncrementerUtils {
     }
 
     public int createGradeId() {
-        IdIncrementer first = datastore.find(IdIncrementer.class)
-                                       .first();
-        var gradeId = first.nextGradeId();
-        log.info("Next gradeId {}", gradeId);
-        datastore.save(first);
-        return gradeId;
+        return increment("maxGradeId").getMaxGradeId();
     }
 
     public int createIndexId() {
-        IdIncrementer first = datastore.find(IdIncrementer.class)
-                                       .first();
-        var index = first.getNextIndex();
-        log.info("Next index {}", index);
-        datastore.save(first);
-        return index;
+        return increment("maxIndex").getMaxIndex();
     }
 
     public int createCourseId() {
-        IdIncrementer first = datastore.find(IdIncrementer.class)
-                                       .first();
-        var id = first.nextCourseId();
-        log.info("Next courseId {}", id);
-        datastore.save(first);
-        return id;
+        return increment("maxCourseId").getMaxCourseId();
+    }
+
+    private IdIncrementer increment(String fieldName) {
+        return datastore.find(IdIncrementer.class)
+                        .modify(UpdateOperators.inc(fieldName))
+                        .execute(new ModifyOptions());
     }
 }

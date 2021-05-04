@@ -21,16 +21,4 @@ public class IdIncrementer {
         maxIndex = 1;
         maxCourseId = 1;
     }
-
-    public int getNextIndex() {
-        return maxIndex++;
-    }
-
-    public int nextCourseId() {
-        return maxCourseId++;
-    }
-
-    public int nextGradeId() {
-        return maxGradeId++;
-    }
 }
