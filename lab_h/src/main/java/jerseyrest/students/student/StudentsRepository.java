@@ -1,22 +1,28 @@
 package jerseyrest.students.student;
 
 import dev.morphia.Datastore;
+import dev.morphia.query.Query;
+import dev.morphia.query.experimental.filters.Filter;
+import dev.morphia.query.experimental.filters.Filters;
 import jerseyrest.courses.Course;
 import jerseyrest.courses.CoursesRepository;
 import jerseyrest.idincrementer.IncrementerUtils;
 import jerseyrest.mongo.MongoClient;
 import jerseyrest.students.grade.Grade;
+import jerseyrest.utils.FilterUtils;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import lombok.SneakyThrows;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class StudentsRepository {
-    private static StudentsRepository repository;
-
     private static final Datastore datastore = MongoClient.getDatastore();
+    private static StudentsRepository repository;
     private final IncrementerUtils incrementerUtils = new IncrementerUtils();
 
     public static StudentsRepository getInstance() {
@@ -91,6 +97,48 @@ public class StudentsRepository {
     public List<Grade> getStudentGrades(int index) {
         return findStudentByIndex(index)
                 .getGrades();
+    }
+
+    @SneakyThrows
+    public List<Student> findStudentsFiltered(String firstName,
+                                              String lastName,
+                                              String birthday,
+                                              String dateComparator) {
+        var filters = new ArrayList<Filter>();
+
+        if (firstName != null) {
+            filters.add(FilterUtils.containsFilter(Student.FIRST_NAME, firstName));
+        }
+
+        if (lastName != null) {
+            filters.add(FilterUtils.containsFilter(Student.LAST_NAME, lastName));
+        }
+
+        // TODO: 09/05/2021 legacy code
+        if (birthday != null) {
+            var date = new SimpleDateFormat("yyyy-MM-dd").parse(birthday);
+
+            if (dateComparator == null) {
+                filters.add(Filters.eq(Student.BIRTHDAY, date));
+            } else {
+                if (dateComparator.equals("-1")) {
+                    filters.add(Filters.lte(Student.BIRTHDAY, date));
+                } else if (dateComparator.equals("1")) {
+                    filters.add(Filters.gte(Student.BIRTHDAY, date));
+                }
+            }
+        }
+
+        Filter filter = Filters.and(filters.toArray(new Filter[0]));
+        Query<Student> students = datastore.find(Student.class);
+
+        if (!filters.isEmpty()) {
+            students = students.filter(filter);
+        }
+
+        return students
+                .iterator()
+                .toList();
     }
 
     public List<Student> findAllStudents() {

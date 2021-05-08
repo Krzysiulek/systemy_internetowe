@@ -1,10 +1,13 @@
 package jerseyrest;
 
+import dev.morphia.Datastore;
 import jerseyrest.courses.Course;
 import jerseyrest.courses.CoursesRepository;
+import jerseyrest.mongo.MongoClient;
 import jerseyrest.students.grade.Grade;
 import jerseyrest.students.student.Student;
 import jerseyrest.students.student.StudentsRepository;
+import jerseyrest.utils.DateParamConverterProvider;
 import jerseyrest.utils.ExceptionHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.glassfish.grizzly.http.server.HttpServer;
@@ -17,13 +20,14 @@ import java.util.Date;
 
 
 @Slf4j
-public class MainLabG {
+public class MainLabH {
     private static final String BASE_URI = "http://localhost:8000/";
 
     public static HttpServer startServer() {
         final ResourceConfig rc = new ResourceConfig()
                 .packages("jerseyrest")
                 .register(DeclarativeLinkingFeature.class)
+                .register(DateParamConverterProvider.class)
                 .register(new ExceptionHandler());
 
         return GrizzlyHttpServerFactory.createHttpServer(URI.create(BASE_URI), rc);
@@ -31,6 +35,10 @@ public class MainLabG {
 
 
     public static void main(String[] args) {
+        Datastore datastore = MongoClient.getDatastore();
+        datastore.getDatabase()
+                 .drop();
+
         initRepositories();
         startServer();
         log.info("Server started on {}", BASE_URI);

@@ -21,9 +21,16 @@ public class StudentsResource {
 
     @GET
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Response getAllStudents() {
-        List<Student> students = studentsRepository.findAllStudents();
+    public Response getAllStudents(@QueryParam("firstName") String firstName,
+                                   @QueryParam("lastName") String lastName,
+                                   @QueryParam("birthday") String birthday,
+                                   @QueryParam("birthdayCompare") String birthdayCompare) {
+        List<Student> students = studentsRepository.findStudentsFiltered(firstName,
+                                                                         lastName,
+                                                                         birthday,
+                                                                         birthdayCompare);
         log.info("Gettings all ({}) students", students.size());
+
         GenericEntity<List<Student>> entities = new GenericEntity<>(students) {
         };
 
