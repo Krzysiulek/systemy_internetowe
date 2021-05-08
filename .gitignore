@@ -25,4 +25,7 @@
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
+
+# mongosy
 lab_g/mongo/*
+lab_h/mongo/*
