@@ -13,10 +13,7 @@ import org.glassfish.jersey.linking.InjectLink;
 import org.glassfish.jersey.linking.InjectLinks;
 
 import javax.ws.rs.core.Link;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.*;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.util.ArrayList;
 import java.util.Date;
@@ -29,6 +26,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @RequiredArgsConstructor
 @Indexes(@Index(options = @IndexOptions(name = "index"), fields = @Field("index")))
+@XmlAccessorType(XmlAccessType.PROPERTY)
 public class Student {
     @Id
     @Setter

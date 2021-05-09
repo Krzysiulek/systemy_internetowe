@@ -18,8 +18,9 @@ public class CourseResource {
 
     @GET
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Response getAllCourses() {
-        List<Course> courses = coursesRepository.findAllCourses();
+    public Response getAllCourses(@QueryParam("lecturer") String lecturer,
+                                  @QueryParam("name") String name) {
+        List<Course> courses = coursesRepository.findAllCourses(lecturer, name);
         GenericEntity<List<Course>> entities = new GenericEntity<>(courses) {
         };
 

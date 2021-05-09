@@ -1,7 +1,10 @@
 package jerseyrest.students.grade;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import dev.morphia.annotations.Embedded;
 import dev.morphia.annotations.Reference;
 import jerseyrest.courses.Course;
+import jerseyrest.utils.LinkParser;
 import lombok.*;
 import org.glassfish.jersey.linking.Binding;
 import org.glassfish.jersey.linking.InjectLink;
@@ -20,6 +23,7 @@ import java.util.List;
 @XmlRootElement(name = "grade")
 @NoArgsConstructor
 @RequiredArgsConstructor
+@Embedded
 public class Grade {
 
     @NonNull
@@ -39,6 +43,7 @@ public class Grade {
     @NonNull
     @Getter
     @Setter
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "CET")
     private Date date;
 
     @NonNull
@@ -67,8 +72,16 @@ public class Grade {
     })
     @XmlElement(name = "link")
     @XmlElementWrapper(name = "links")
-    @XmlJavaTypeAdapter(Link.JaxbAdapter.class)
+    @XmlJavaTypeAdapter(LinkParser.JaxbAdapter.class)
     @Getter
 //    @BsonIgnore
     private final List<Link> links = new ArrayList<>();
+
+    public double getValueCompare() {
+        return 0;
+    }
+
+    public String getDateCompare() {
+        return "";
+    }
 }

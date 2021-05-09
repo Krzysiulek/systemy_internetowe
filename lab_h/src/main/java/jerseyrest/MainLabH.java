@@ -48,7 +48,7 @@ public class MainLabH {
         CoursesRepository coursesRepository = CoursesRepository.getInstance();
         StudentsRepository studentsRepository = StudentsRepository.getInstance();
 
-        boolean shouldInit = coursesRepository.findAllCourses()
+        boolean shouldInit = coursesRepository.findAllCourses(null, null)
                                               .isEmpty() || studentsRepository.findAllStudents()
                                                                               .isEmpty();
 

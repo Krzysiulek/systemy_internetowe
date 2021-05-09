@@ -2,9 +2,13 @@ package jerseyrest.courses;
 
 
 import dev.morphia.Datastore;
+import dev.morphia.query.experimental.filters.Filter;
+import dev.morphia.query.experimental.filters.Filters;
 import jerseyrest.idincrementer.IncrementerUtils;
 import jerseyrest.mongo.MongoClient;
+import jerseyrest.utils.FilterUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CoursesRepository {
@@ -19,10 +23,27 @@ public class CoursesRepository {
         return coursesRepository;
     }
 
-    public List<Course> findAllCourses() {
-        return datastore.find(Course.class)
-                        .iterator()
-                        .toList();
+    public List<Course> findAllCourses(String lecturer, String name) {
+        var filtersList = new ArrayList<Filter>();
+
+        if (lecturer != null) {
+            filtersList.add(FilterUtils.containsFilter(Course.LECTURER, lecturer));
+        }
+
+        if (name != null) {
+            filtersList.add(FilterUtils.containsFilter(Course.NAME, name));
+        }
+
+
+        var courses = datastore.find(Course.class);
+        if (!filtersList.isEmpty()) {
+            Filter filters = Filters.and(filtersList.toArray(new Filter[0]));
+            courses = courses.filter(filters);
+        }
+
+        return courses
+                .iterator()
+                .toList();
     }
 
     public Course addCourse(String name, String teacher) {
@@ -32,15 +53,15 @@ public class CoursesRepository {
     }
 
     public Course getCourse(int id) {
-        return findAllCourses().stream()
-                               .filter(c -> c.getId() == id)
-                               .findFirst()
-                               .orElse(null);
+        return findAllCourses(null, null).stream()
+                                         .filter(c -> c.getId() == id)
+                                         .findFirst()
+                                         .orElse(null);
     }
 
     public boolean courseExists(long id) {
-        return findAllCourses().stream()
-                               .anyMatch(course -> course.getId() == id);
+        return findAllCourses(null, null).stream()
+                                         .anyMatch(course -> course.getId() == id);
     }
 
     public void deleteCourse(int courseId) {

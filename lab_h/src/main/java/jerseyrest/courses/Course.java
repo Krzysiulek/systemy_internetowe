@@ -43,10 +43,13 @@ public class Course {
     @Getter
     @Setter
     private String name;
+    public static final String NAME = "name";
+
     @NonNull
     @Getter
     @Setter
     private String lecturer;
+    public static final String LECTURER = "lecturer";
 
     @XmlTransient
     public String getObjectId() {

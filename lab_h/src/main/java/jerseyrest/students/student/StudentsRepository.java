@@ -15,9 +15,8 @@ import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class StudentsRepository {
@@ -60,6 +59,22 @@ public class StudentsRepository {
                                 .orElse(null);
     }
 
+    public Optional<Student> findStudentByIndexFiltered(int index, Double value, Double valueCompare) {
+        Query<Student> query = datastore.find(Student.class)
+                                        .filter(Filters.eq("index", index));
+
+        if (value != null && valueCompare == null) {
+            query = query.filter(Filters.elemMatch("grades", Filters.eq("value", value)));
+        }
+
+
+        return query
+                .iterator()
+                .toList()
+                .stream()
+                .findFirst();
+    }
+
     public Grade getStudentGrade(int index, int gradeId) {
         List<Grade> grades = getStudentGrades(index);
         return grades.stream()
@@ -100,6 +115,84 @@ public class StudentsRepository {
     }
 
     @SneakyThrows
+    public List<Grade> getStudentGradesFiltered(int index,
+                                                Double value,
+                                                Double valueCompare,
+                                                String date,
+                                                String dateCompare,
+                                                String course) {
+        Optional<Student> studentByIndexFiltered = findStudentByIndexFiltered(index, value, valueCompare);
+        if (studentByIndexFiltered.isPresent()) {
+            var grades = studentByIndexFiltered.get()
+                                               .getGrades();
+
+            if (value != null) {
+                if (valueCompare == null) {
+                    grades = grades.stream()
+                                   .filter(el -> el.getValue()
+                                                   .equals(value))
+                                   .collect(Collectors.toList());
+                } else {
+                    if (valueCompare == 1.0) {
+                        grades = grades.stream()
+                                       .filter(el -> el.getValue() >= value)
+                                       .collect(Collectors.toList());
+                    } else if (valueCompare == -1.0) {
+                        grades = grades.stream()
+                                       .filter(el -> el.getValue() <= value)
+                                       .collect(Collectors.toList());
+                    }
+                }
+            }
+
+            if (date != null) {
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                Date parsedDate = sdf.parse(date);
+
+                if (dateCompare == null) {
+                    grades = grades
+                            .stream()
+                            .filter(el -> isSameDay(el.getDate(), parsedDate))
+                            .collect(Collectors.toList());
+                } else {
+                    if (dateCompare.equals("1")) {
+                        grades = grades
+                                .stream()
+                                .filter(el -> el.getDate()
+                                                .after(parsedDate))
+                                .collect(Collectors.toList());
+                    } else if (dateCompare.equals("-1")) {
+                        grades = grades
+                                .stream()
+                                .filter(el -> el.getDate()
+                                                .before(parsedDate))
+                                .collect(Collectors.toList());
+                    }
+                }
+            }
+
+            if (course != null) {
+                grades = grades.stream()
+                               .filter(el -> el.getCourse()
+                                               .getId() == parseInt(course))
+                               .collect(Collectors.toList());
+            }
+
+            return grades;
+        }
+
+        return Collections.emptyList();
+    }
+
+    private int parseInt(String val) {
+        try {
+            return Integer.parseInt(val);
+        } catch (Exception e) {
+            return 0;
+        }
+    }
+
+    @SneakyThrows
     public List<Student> findStudentsFiltered(String firstName,
                                               String lastName,
                                               String birthday,
@@ -114,7 +207,6 @@ public class StudentsRepository {
             filters.add(FilterUtils.containsFilter(Student.LAST_NAME, lastName));
         }
 
-        // TODO: 09/05/2021 legacy code
         if (birthday != null) {
             var date = new SimpleDateFormat("yyyy-MM-dd").parse(birthday);
 
@@ -157,6 +249,12 @@ public class StudentsRepository {
     private boolean isGradeValid(Grade grade) {
         double value = grade.getValue();
         return value >= 2.0 && value <= 5.0 && value % 0.5 == 0;
+    }
+
+    public static boolean isSameDay(Date date1, Date date2) {
+        SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMdd");
+        return fmt.format(date1)
+                  .equals(fmt.format(date2));
     }
 
     public void updateStudent(Student studentInDataBase, Student updatedStudent) {

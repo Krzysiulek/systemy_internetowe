@@ -19,8 +19,18 @@ public class GradesResource {
 
     @GET
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Response getAllGrades(@PathParam("index") int index) {
-        List<Grade> grades = studentsRepository.getStudentGrades(index);
+    public Response getAllGrades(@PathParam("index") int index,
+                                 @QueryParam("value") Double value,
+                                 @QueryParam("valueCompare") Double valueCompare,
+                                 @QueryParam("date") String date,
+                                 @QueryParam("dateCompare") String dateCompare,
+                                 @QueryParam("course") String course) {
+        List<Grade> grades = studentsRepository.getStudentGradesFiltered(index,
+                                                                         value,
+                                                                         valueCompare,
+                                                                         date,
+                                                                         dateCompare,
+                                                                         course);
         if (grades != null) {
             GenericEntity<List<Grade>> gradesEntity = new GenericEntity<>(grades) {
             };
