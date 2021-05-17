@@ -1,5 +1,7 @@
 package jerseyrest.utils;
 
+import lombok.NoArgsConstructor;
+
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.ext.ParamConverter;
 import javax.ws.rs.ext.ParamConverterProvider;
@@ -10,9 +12,10 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @Provider
+@NoArgsConstructor
 public class DateParamConverterProvider implements ParamConverterProvider {
 
-    private final String format;
+    private String format;
 
     public DateParamConverterProvider(String dateFormat) {
         this.format = dateFormat;
