@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="pl">
+<meta charset="UTF-8">
+<title>System Zarządzania Studentami</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="styles/global-styles.css">
+<link rel="stylesheet" href="styles/header-styles.css">
+<link rel="stylesheet" href="styles/content-styles.css">
+<link rel="stylesheet" href="styles/footer-styles.css">
+<body>
+
+<header>
+    <img class="logo" src="logo.png" alt="Logo aplikacji">
+    <h1>System Zarządzania Studentami</h1>
+</header>
+
+<div class="content">
+    <nav>
+        <a href="#students">Lista Studentów</a>
+        <a href="#grades">Lista Ocen</a>
+        <a href="#courses">Lista Kursów</a>
+    </nav>
+
+    <div>
+        <input type="text" placeholder="Wyszukiwarka">
+
+        <article id="students">
+            <h2>Lista studentów</h2>
+            <form>
+
+                <table>
+                    <tr>
+                        <TD>Indeks</TD>
+                        <TD>Imie</TD>
+                        <TD>Nazwisko</TD>
+                        <TD>Data urodzenia</TD>
+                        <TD>Akcje</TD>
+                    </tr>
+
+                    <tr>
+                        <td><input type="number" placeholder="Indeks" name="id" readonly value="1234"></td>
+                        <td><input type="text" placeholder="Imie" name="fname"></td>
+                        <td><input type="text" placeholder="Nazwisko" name="lname"></td>
+                        <td><input type="date" max="2021-06-25"></td>
+                        <td><input type="button" value="Oceny"></td>
+                    </tr>
+                </table>
+            </form>
+        </article>
+
+        <article id="grades">
+            <h2>Lista ocen</h2>
+            <form>
+                <table>
+                    <tr>
+                        <TD>Id</TD>
+                        <TD>Ocena</TD>
+                        <TD>Data wystawienia</TD>
+                        <TD>Przedmiot</TD>
+                        <TD>Akcje</TD>
+                    </tr>
+
+                    <tr>
+                        <td><input type="number" placeholder="Id" name="id" readonly value="1234"></td>
+                        <td><input type="number" max="5" min="2" step="0.5" required="required" placeholder="Ocena">
+                        </td>
+                        <td><input type="date" max="2021-06-25" required="required"></td>
+                        <td>
+                            <select name="courses">
+                                <option value="sint">Systemy Internetowe</option>
+                                <option value="misio">Metody Inteligencji Sztucznej i Obliczeniowej</option>
+                                <option value="um">Uczenie maszynowe</option>
+                                <option value="opwo">Organizacja procesu wytwarzania oprogramowania</option>
+                            </select>
+                        </td>
+                        <td><input type="button" value="Usuń"></td>
+                    </tr>
+                </table>
+            </form>
+
+        </article>
+
+        <article id="courses">
+            <h2>Lista przedmiotów</h2>
+            <form>
+                <table>
+                    <tr>
+                        <TD>Id</TD>
+                        <TD>Przedmiot</TD>
+                        <TD>Prowadzący</TD>
+                        <TD>Akcje</TD>
+                    </tr>
+
+                    <tr>
+                        <td><input type="number" placeholder="ID" name="id" readonly value="321"></td>
+                        <td><input type="text" required="required" placeholder="Nazwa przedmiotu"></td>
+                        <td><input type="text" required="required" placeholder="Prowadzący"></td>
+                        <td><input type="button" value="Usuń"></td>
+                    </tr>
+                </table>
+            </form>
+        </article>
+
+    </div>
+</div>
+
+<footer>
+    <h3>Krzysztof Czarnecki</h3>
+    <a href="https://www.cat.put.poznan.pl/">WYDZIAŁ INFORMATYKI I TELEKOMUNIKACJI</a>
+</footer>
+</body>
+</html>

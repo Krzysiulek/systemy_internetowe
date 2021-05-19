@@ -1,0 +1,26 @@
+.content {
+    display: flex;
+    flex-direction: row;
+    margin: 10px;
+}
+
+nav {
+    display: flex;
+    flex-direction: column;
+    width: fit-content;
+    margin: 10px;
+}
+
+article {
+    display: none;
+
+}
+
+article:target {
+    display: flex;
+    flex-direction: column;
+}
+
+input {
+    min-width: 100px;
+}
