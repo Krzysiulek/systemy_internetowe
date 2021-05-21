@@ -1,14 +1,40 @@
+/*
+#ABA19B
+#6B6561
+#EBDED5
+#F7EAE1
+#D1C5BE
+*/
+
+
 .content {
     display: flex;
     flex-direction: row;
     margin: 10px;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+}
+
+.helper {
+    display: flex;
+    justify-content: center;
+    flex: 5;
 }
 
 nav {
     display: flex;
     flex-direction: column;
-    width: fit-content;
+    width: auto;
+    margin: auto;
+    background-color: #F7EAE1;
+    flex: 1;
+}
+
+nav > a {
+    width: auto;
     margin: 10px;
+    align-self: center;
 }
 
 article {
@@ -21,6 +47,15 @@ article:target {
     flex-direction: column;
 }
 
-input {
+td, input, select {
     min-width: 100px;
+}
+
+.tr-headers {
+    font-weight: bold;
+}
+
+input:invalid {
+    background-color: red;
+    border: 1px solid red;
 }

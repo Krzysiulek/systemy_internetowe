@@ -9,13 +9,13 @@
 <link rel="stylesheet" href="styles/footer-styles.css">
 <body>
 
-<header>
+<header class="no-print">
     <img class="logo" src="logo.png" alt="Logo aplikacji">
     <h1>System Zarządzania Studentami</h1>
 </header>
 
 <div class="content">
-    <nav>
+    <nav class="no-print">
         <a href="#students">Lista Studentów</a>
         <a href="#grades">Lista Ocen</a>
         <a href="#courses">Lista Kursów</a>
@@ -27,14 +27,14 @@
             <form>
 
                 <table class="flex-table">
-                    <tr>
+                    <tr class="tr-headers">
                         <TD>Indeks</TD>
                         <TD>Imie</TD>
                         <TD>Nazwisko</TD>
                         <TD>Data urodzenia</TD>
-                        <TD>Akcje</TD>
+                        <TD class="no-print">Akcje</TD>
                     </tr>
-                    <tr>
+                    <tr class="tr-headers no-print">
                         <TD>
                             <input type="text" placeholder="Szukaj indeks" name="id">
                         </TD>
@@ -44,7 +44,7 @@
                         <TD>
                             <input type="text" placeholder="Szukaj nazwisko" name="id">
                         </TD>
-                        <TD>
+                        <TD class="no-print">
                             <input type="date" placeholder="Szukaj po dacie urodzenia" name="id">
                         </TD>
                         <TD></TD>
@@ -55,7 +55,7 @@
                         <td><input type="text" placeholder="Imie" name="fname"></td>
                         <td><input type="text" placeholder="Nazwisko" name="lname"></td>
                         <td><input type="date" max="2021-06-25"></td>
-                        <td><input type="button" value="Oceny"></td>
+                        <td class="no-print"><input type="button" value="Oceny"></td>
                     </tr>
 
                     <tr>
@@ -63,7 +63,7 @@
                         <td><input type="text" placeholder="Imie" name="fname"></td>
                         <td><input type="text" placeholder="Nazwisko" name="lname"></td>
                         <td><input type="date" max="2021-06-25"></td>
-                        <td><input type="button" value="Oceny"></td>
+                        <td class="no-print"><input type="button" value="Oceny"></td>
                     </tr>
                 </table>
             </form>
@@ -73,14 +73,14 @@
             <h2 class="title">Lista ocen</h2>
             <form>
                 <table class="flex-table">
-                    <tr>
+                    <tr class="tr-headers">
                         <TD>Id</TD>
                         <TD>Ocena</TD>
                         <TD>Data wystawienia</TD>
                         <TD>Przedmiot</TD>
-                        <TD>Akcje</TD>
+                        <TD class="no-print">Akcje</TD>
                     </tr>
-                    <tr>
+                    <tr class="tr-headers no-print">
                         <TD></TD>
                         <TD>
                             <input type="number" placeholder="Szukaj oceny" name="id">
@@ -97,10 +97,10 @@
                                 <option value="opwo">Organizacja procesu wytwarzania oprogramowania</option>
                             </select>
                         </TD>
-                        <TD></TD>
+                        <TD class="no-print"></TD>
                     </tr>
 
-                    <tr>
+                    <tr class="no-print">
                         <td><input type="number" placeholder="Id" name="id" readonly value="1234"></td>
                         <td><input type="number" max="5" min="2" step="0.5" required="required" placeholder="Ocena">
                         </td>
@@ -128,7 +128,7 @@
                                 <option value="opwo">Organizacja procesu wytwarzania oprogramowania</option>
                             </select>
                         </td>
-                        <td><input type="button" value="Usuń"></td>
+                        <td class="no-print"><input class="no-print" type="button" value="Usuń"></td>
                     </tr>
                 </table>
             </form>
@@ -139,13 +139,13 @@
             <h2 class="title">Lista przedmiotów</h2>
             <form>
                 <table class="flex-table">
-                    <tr>
+                    <tr class="tr-headers">
                         <TD>Id</TD>
                         <TD>Przedmiot</TD>
                         <TD>Prowadzący</TD>
-                        <TD>Akcje</TD>
+                        <TD class="no-print">Akcje</TD>
                     </tr>
-                    <tr>
+                    <tr class="no-print">
                         <td></td>
                         <td>
                             <select name="courses">
@@ -157,14 +157,14 @@
                             </select>
                         </td>
                         <td><input type="text" placeholder="Wyszukaj prowadzącego"></td>
-                        <td><input type="button" value="Usuń"></td>
+                        <td class="no-print"><input type="button" value="Usuń"></td>
                     </tr>
 
                     <tr>
                         <td><input type="number" placeholder="ID" name="id" readonly value="321"></td>
                         <td><input type="text" required="required" placeholder="Nazwa przedmiotu"></td>
                         <td><input type="text" required="required" placeholder="Prowadzący"></td>
-                        <td><input type="button" value="Usuń"></td>
+                        <td class="no-print"><input type="button" value="Usuń"></td>
                     </tr>
                 </table>
             </form>
@@ -173,9 +173,10 @@
     </div>
 </div>
 
-<footer>
+<footer class="no-print">
     <h3>Krzysztof Czarnecki</h3>
     <a href="https://www.cat.put.poznan.pl/">WYDZIAŁ INFORMATYKI I TELEKOMUNIKACJI</a>
+    <button id="print-button" onclick="window.print();">Drukuj</button>
 </footer>
 </body>
 </html>

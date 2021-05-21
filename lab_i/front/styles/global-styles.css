@@ -1,5 +1,7 @@
 html, body {
     height: 100%;
+    font-family: "Times New Roman", serif;
+    font-size: 1.1em;
 }
 
 body {
@@ -7,4 +9,102 @@ body {
     display: flex;
     flex-direction: column;
     height: 100%;
+}
+
+a {
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: Verdana, serif;
+}
+
+
+.flex-table {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #ccc;
+    background: #fff;
+}
+
+.flex-table thead {
+    color: #fff;
+    background: #009485;
+}
+
+.flex-table thead tr,
+.flex-table tbody tr {
+    display: flex;
+}
+
+.flex-table tbody tr + tr {
+    border-top: 1px solid #ccc;
+}
+
+.flex-table thead tr th,
+.flex-table tbody tr td {
+    display: flex;
+    flex: 1;
+    padding: .5em;
+}
+
+tr:nth-child(even) {
+    background: white;
+}
+
+tr:nth-child(even) input {
+    background: white;
+}
+
+tr:nth-child(odd) {
+    background: #F7EAE1;
+}
+
+tr:nth-child(odd) input {
+    background-color: #F7EAE1;
+}
+
+tr:nth-child(1), tr:nth-child(2) > input {
+    background: #EBDED5;
+}
+
+tr:hover:not(:nth-child(1)):not(:nth-child(2)) {
+    background: #D1C5BE;
+}
+
+.flex-fixhead-table tbody {
+    overflow: auto;
+    height: 50vh;
+}
+
+@media print {
+    .no-print {
+        display: none;
+        visibility: collapse;
+        height: 0;
+        width: 0;
+        line-height: 0;
+        font-size: 0;
+        margin: 0;
+        padding: 0;
+    }
+
+    body {
+        font-size: 0.5em;
+        margin: auto;
+        width: min-content;
+    }
+
+    input {
+        max-width: 50px;
+        width: fit-content;
+    }
+
+    td.no-print {
+        width: 0;
+    }
 }
