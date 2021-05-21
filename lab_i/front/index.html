@@ -21,20 +21,41 @@
         <a href="#courses">Lista Kursów</a>
     </nav>
 
-    <div>
-        <input type="text" placeholder="Wyszukiwarka">
-
+    <div class="helper">
         <article id="students">
-            <h2>Lista studentów</h2>
+            <h2 class="title">Lista studentów</h2>
             <form>
 
-                <table>
+                <table class="flex-table">
                     <tr>
                         <TD>Indeks</TD>
                         <TD>Imie</TD>
                         <TD>Nazwisko</TD>
                         <TD>Data urodzenia</TD>
                         <TD>Akcje</TD>
+                    </tr>
+                    <tr>
+                        <TD>
+                            <input type="text" placeholder="Szukaj indeks" name="id">
+                        </TD>
+                        <TD>
+                            <input type="text" placeholder="Szukaj imię" name="id">
+                        </TD>
+                        <TD>
+                            <input type="text" placeholder="Szukaj nazwisko" name="id">
+                        </TD>
+                        <TD>
+                            <input type="date" placeholder="Szukaj po dacie urodzenia" name="id">
+                        </TD>
+                        <TD></TD>
+                    </tr>
+
+                    <tr>
+                        <td><input type="number" placeholder="Indeks" name="id" readonly value="1234"></td>
+                        <td><input type="text" placeholder="Imie" name="fname"></td>
+                        <td><input type="text" placeholder="Nazwisko" name="lname"></td>
+                        <td><input type="date" max="2021-06-25"></td>
+                        <td><input type="button" value="Oceny"></td>
                     </tr>
 
                     <tr>
@@ -49,9 +70,9 @@
         </article>
 
         <article id="grades">
-            <h2>Lista ocen</h2>
+            <h2 class="title">Lista ocen</h2>
             <form>
-                <table>
+                <table class="flex-table">
                     <tr>
                         <TD>Id</TD>
                         <TD>Ocena</TD>
@@ -59,7 +80,41 @@
                         <TD>Przedmiot</TD>
                         <TD>Akcje</TD>
                     </tr>
+                    <tr>
+                        <TD></TD>
+                        <TD>
+                            <input type="number" placeholder="Szukaj oceny" name="id">
+                        </TD>
+                        <TD>
+                            <input type="date" name="id">
+                        </TD>
+                        <TD>
+                            <select name="courses">
+                                <option value="">Wyszukaj...</option>
+                                <option value="sint">Systemy Internetowe</option>
+                                <option value="misio">Metody Inteligencji Sztucznej i Obliczeniowej</option>
+                                <option value="um">Uczenie maszynowe</option>
+                                <option value="opwo">Organizacja procesu wytwarzania oprogramowania</option>
+                            </select>
+                        </TD>
+                        <TD></TD>
+                    </tr>
 
+                    <tr>
+                        <td><input type="number" placeholder="Id" name="id" readonly value="1234"></td>
+                        <td><input type="number" max="5" min="2" step="0.5" required="required" placeholder="Ocena">
+                        </td>
+                        <td><input type="date" max="2021-06-25" required="required"></td>
+                        <td>
+                            <select name="courses">
+                                <option value="sint">Systemy Internetowe</option>
+                                <option value="misio">Metody Inteligencji Sztucznej i Obliczeniowej</option>
+                                <option value="um">Uczenie maszynowe</option>
+                                <option value="opwo">Organizacja procesu wytwarzania oprogramowania</option>
+                            </select>
+                        </td>
+                        <td><input type="button" value="Usuń"></td>
+                    </tr>
                     <tr>
                         <td><input type="number" placeholder="Id" name="id" readonly value="1234"></td>
                         <td><input type="number" max="5" min="2" step="0.5" required="required" placeholder="Ocena">
@@ -81,14 +136,28 @@
         </article>
 
         <article id="courses">
-            <h2>Lista przedmiotów</h2>
+            <h2 class="title">Lista przedmiotów</h2>
             <form>
-                <table>
+                <table class="flex-table">
                     <tr>
                         <TD>Id</TD>
                         <TD>Przedmiot</TD>
                         <TD>Prowadzący</TD>
                         <TD>Akcje</TD>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>
+                            <select name="courses">
+                                <option value="">Wyszukaj...</option>
+                                <option value="sint">Systemy Internetowe</option>
+                                <option value="misio">Metody Inteligencji Sztucznej i Obliczeniowej</option>
+                                <option value="um">Uczenie maszynowe</option>
+                                <option value="opwo">Organizacja procesu wytwarzania oprogramowania</option>
+                            </select>
+                        </td>
+                        <td><input type="text" placeholder="Wyszukaj prowadzącego"></td>
+                        <td><input type="button" value="Usuń"></td>
                     </tr>
 
                     <tr>
