@@ -49,6 +49,7 @@ article:target {
 
 td, input, select {
     min-width: 100px;
+    width: 100%;
 }
 
 .tr-headers {
