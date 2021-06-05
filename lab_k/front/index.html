@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="pl">
+<meta charset="UTF-8">
+<title>System Zarządzania Studentami</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="styles/global-styles.css">
+<link rel="stylesheet" href="styles/header-styles.css">
+<link rel="stylesheet" href="styles/content-styles.css">
+<link rel="stylesheet" href="styles/footer-styles.css">
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js" type="text/javascript"></script>
+    <script src="https://knockoutjs.com/downloads/knockout-3.5.1.js" type="text/javascript"></script>
+    <script type="text/javascript" src="libs/mapping.js"></script>
+    <script type="text/javascript" src="scripts.js"></script>
+</head>
+<body>
+
+<header class="no-print">
+    <img class="logo" src="logo.png" alt="Logo aplikacji">
+    <h1>System Zarządzania Studentami</h1>
+</header>
+
+<div class="content">
+    <nav class="no-print">
+        <a href="#students">Lista Studentów</a>
+        <a href="#courses">Lista Kursów</a>
+    </nav>
+
+    <div class="helper">
+        <article id="students">
+            <h2 class="title">Lista studentów</h2>
+            <form>
+
+                <table class="flex-table">
+                    <tr class="tr-headers">
+                        <TD>Indeks</TD>
+                        <TD>Imie</TD>
+                        <TD>Nazwisko</TD>
+                        <TD>Data urodzenia</TD>
+                        <TD class="no-print">Akcje</TD>
+                    </tr>
+                    <tr class="tr-headers no-print">
+                        <TD><input type="text" placeholder="Szukaj indeks" name="id"></TD>
+                        <TD><input type="text" placeholder="Szukaj imię" name="id"></TD>
+                        <TD><input type="text" placeholder="Szukaj nazwisko" name="id"></TD>
+                        <TD class="no-print">
+                            <input type="date" placeholder="Szukaj po dacie urodzenia" name="id">
+                        </TD>
+                        <TD></TD>
+                    </tr>
+
+                    <tbody data-bind="foreach: students.objects">
+                    <tr>
+                        <td><input type="number" placeholder="Indeks" name="id" readonly data-bind="value: index"></td>
+                        <td><input type="text" required placeholder="Imie" name="fname" data-bind="value: firstName">
+                        </td>
+                        <td><input type="text" required placeholder="Nazwisko" name="lname" data-bind="value: lastName">
+                        </td>
+                        <td><input type="date" required max="2021-06-25" data-bind="value: birthday"></td>
+                        <td class="no-print" class="buttons">
+                            <input type="submit" data-bind="click: () => $parent.onGoToGrades(index())" value="Oceny">
+                            <input data-bind="click: (data) => $parent.delete(data, $parent.students)" type="submit"
+                                   value="Usuń">
+                        </td>
+                    </tr>
+                    </tbody>
+
+                    <!-- DODAWANIE STUDENTA -->
+                    <tr>
+                        <td><input type="number" name="student1_index" data-bind="value: newStudent.index" required
+                                   readonly></td>
+                        <td><input type="text" name="student1_name" data-bind="value: newStudent.firstName"
+                                   pattern="[A-Za-zÀ-ž]{2,}" required placeholder="Imie"></td>
+                        <td><input type="text" name="student1_surname" data-bind="value: newStudent.lastName"
+                                   pattern="[A-Za-zÀ-ž]{2,}" required placeholder="Nazwisko"></td>
+                        <td><input type="date" name="student1_birthdate" data-bind="value: newStudent.birthday"
+                                   max="2100-12-31" min="1900-12-31" required></td>
+                        <td class="buttons">
+                            <input data-bind="click: (data) => addObject('newStudent', students)" type="submit"
+                                   name="studentNew" value="Dodaj studenta">
+                        </td>
+                    </tr>
+
+                </table>
+            </form>
+        </article>
+
+        <article id="grades">
+            <h2 class="title">Lista ocen</h2>
+            <form>
+                <table class="flex-table">
+                    <tr class="tr-headers">
+                        <TD>Id</TD>
+                        <TD>Ocena</TD>
+                        <TD>Data wystawienia</TD>
+                        <TD>Przedmiot</TD>
+                        <TD class="no-print">Akcje</TD>
+                    </tr>
+                    <tr class="tr-headers no-print">
+                        <TD></TD>
+                        <TD>
+                            <input type="number" placeholder="Szukaj oceny" name="id">
+                        </TD>
+                        <TD>
+                            <input type="date" name="id">
+                        </TD>
+                        <TD>
+                            <select data-bind="options: courses,
+                                               optionsText: 'name',
+                                               optionsCaption: 'Wybierz...'"></select>
+                        </TD>
+                        <TD class="no-print"></TD>
+                    </tr>
+
+                    <tbody data-bind="foreach: grades.objects">
+                    <tr class="no-print">
+                        <td><input type="number" placeholder="Id" name="id" readonly data-bind="value: id"></td>
+                        <td><input type="number" max="5" min="2" step="0.5" data-bind="value: value" required="required"
+                                   placeholder="Ocena">
+                        </td>
+                        <td><input type="date" max="2021-06-25" data-bind="value: date" required="required"></td>
+                        <td>
+                            <select name="courses">
+                                <option value="sint">Systemy Internetowe</option>
+                                <option value="misio">Metody Inteligencji Sztucznej i Obliczeniowej</option>
+                                <option value="um">Uczenie maszynowe</option>
+                                <option value="opwo">Organizacja procesu wytwarzania oprogramowania</option>
+                            </select>
+                        </td>
+                        <td><input type="button" value="Usuń"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </form>
+
+        </article>
+
+        <article id="courses">
+            <h2 class="title">Lista przedmiotów</h2>
+            <form>
+                <table class="flex-table">
+                    <tr class="tr-headers">
+                        <TD>Id</TD>
+                        <TD>Przedmiot</TD>
+                        <TD>Prowadzący</TD>
+                        <TD class="no-print">Akcje</TD>
+                    </tr>
+                    <tr class="no-print">
+                        <td></td>
+                        <td><input type="text" placeholder="Wyszukaj przedmiot"></td>
+                        <td><input type="text" placeholder="Wyszukaj prowadzącego"></td>
+                        <td class="no-print"><input type="button" value="Usuń"></td>
+                    </tr>
+
+                    <tbody data-bind="foreach: courses.objects">
+                    <tr>
+                        <td><input type="number" placeholder="ID" name="id" readonly data-bind="value: id"></td>
+                        <td><input type="text" required="required" placeholder="Nazwa przedmiotu"
+                                   data-bind="value: name"></td>
+                        <td><input type="text" required="required" placeholder="Prowadzący" data-bind="value: lecturer">
+                        </td>
+                        <td class="no-print">
+                            <input data-bind="click: (data) => $parent.delete(data, $parent.courses)" type="submit"
+                                   value="Usuń">
+                        </td>
+                    </tr>
+                    </tbody>
+
+                    <!-- DODAWANIE PRZEDMIOTU -->
+                    <tr>
+                        <td><input type="number" placeholder="ID" name="id" readonly data-bind="value: newCourse.id">
+                        </td>
+                        <td><input type="text" required="required" placeholder="Nazwa przedmiotu"
+                                   data-bind="value: newCourse.name"></td>
+                        <td><input type="text" required="required" placeholder="Prowadzący"
+                                   data-bind="value: newCourse.lecturer"></td>
+                        <td class="no-print">
+                            <input data-bind="click: (data) => addObject('newCourse', courses)" type="submit"
+                                   name="newCourse" value="Dodaj przedmiot">
+                        </td>
+                    </tr>
+                </table>
+            </form>
+        </article>
+
+    </div>
+</div>
+
+<footer class="no-print">
+    <h3>Krzysztof Czarnecki</h3>
+    <a href="https://www.cat.put.poznan.pl/">WYDZIAŁ INFORMATYKI I TELEKOMUNIKACJI</a>
+    <button id="print-button" onclick="window.print();">Drukuj</button>
+</footer>
+</body>
+</html>

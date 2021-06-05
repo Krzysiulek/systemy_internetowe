@@ -1,0 +1,15 @@
+header {
+    padding: 10px;
+    background-color: #EBDED5;
+    margin: 0;
+    display: flex;
+    justify-content: flex-start;
+}
+
+.logo {
+    height: 10vh;
+}
+
+.title {
+    background: linear-gradient(#EBDED5, #D1C5BE);
+}
