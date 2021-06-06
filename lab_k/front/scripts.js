@@ -85,27 +85,27 @@ let Model = function (path) {
 
 };
 
-var getAllData = function (viewController) {
+let getAllData = function (viewController) {
     viewController.get(viewController.students);
     viewController.get(viewController.courses);
 };
 
 let ViewController = function () {
-    var self = this;
-    self.students = new Model('students');
-    self.courses = new Model('courses');
-    self.grades = new Model('students/grades');
+    let thisModel = this;
+    thisModel.students = new Model('students');
+    thisModel.courses = new Model('courses');
+    thisModel.grades = new Model('students/grades');
 
-    self.newStudent = Student();
-    self.newGrade = Grade();
-    self.newCourse = Course();
+    thisModel.newStudent = Student();
+    thisModel.newGrade = Grade();
+    thisModel.newCourse = Course();
 
-    self.currentStudent = 0;
+    thisModel.currentStudent = 0;
     this.selectedCourseId = 0;
 
-    self.addObject = function (objectName, group) {
+    thisModel.addObject = function (objectName, group) {
         if (objectName == 'newGrade') {
-            self.newGrade.course = {
+            thisModel.newGrade.course = {
                 id: this.selectedCourseId
             }
         }
@@ -118,11 +118,11 @@ let ViewController = function () {
             })
     };
 
-    var dataToObservable = function (data) {
-        var observables = ko.observableArray();
+    let dataToObservable = function (data) {
+        let observables = ko.observableArray();
         data.forEach(function (object) {
-            var newObject = {};
-            for (var field in object) {
+            let newObject = {};
+            for (let field in object) {
                 if (field !== 'link' && object.hasOwnProperty(field)) {
                     newObject[field] = ko.observable(object[field]);
                 }
@@ -132,15 +132,15 @@ let ViewController = function () {
         return observables;
     };
 
-    self.get = function (group, query) {
+    thisModel.get = function (group, query) {
         group.get(query).then(function (data) {
-            var observables = dataToObservable(data);
+            let observables = dataToObservable(data);
             group.objects.removeAll();
             observables().forEach(function (o) {
                 group.objects.push(o);
             });
             observables().forEach(function (object) {
-                for (var field in object) {
+                for (let field in object) {
                     if (object.hasOwnProperty(field) && typeof object[field] === "function") {
                         object[field].subscribe(function (changes) {
                             group.put(object);
@@ -151,22 +151,22 @@ let ViewController = function () {
         });
     };
 
-    self.delete = function (object, group) {
+    thisModel.delete = function (object, group) {
         group.delete(object).then(function () {
             group.objects.remove(object);
         });
     };
 
-    self.onGoToGrades = function (index) {
+    thisModel.onGoToGrades = function (index) {
         window.location.assign(window.location.href.replace("students", "grades"));
-        self.currentStudent = index;
-        self.get(self.grades);
+        thisModel.currentStudent = index;
+        thisModel.get(thisModel.grades);
         return true;
     };
 };
 
 
-var viewController = new ViewController();
+let viewController = new ViewController();
 getAllData(viewController);
 
 $(function () {
