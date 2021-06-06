@@ -146,11 +146,6 @@ let ViewController = function () {
     };
 
     self.onGoToGrades = function (index) {
-        console.log(index);
-        console.log(window.location.href);
-        // console.log(self.grades);
-        // self.grades = new Model('students/grades');
-        // console.log(self.grades);
         window.location.assign(window.location.href.replace("students", "grades"));
 
         self.currentStudent = index;
@@ -207,5 +202,5 @@ getAllData(viewController);
 $(function () {
     setTimeout(function () {
         ko.applyBindings(viewController);
-    }, 1);
+    }, 10);
 });
