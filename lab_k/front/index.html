@@ -8,8 +8,8 @@
 <link rel="stylesheet" href="styles/content-styles.css">
 <link rel="stylesheet" href="styles/footer-styles.css">
 <head>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js" type="text/javascript"></script>
-    <script src="https://knockoutjs.com/downloads/knockout-3.5.1.js" type="text/javascript"></script>
+    <script src="libs/jquery.js" type="text/javascript"></script>
+    <script src="libs/knockout.js" type="text/javascript"></script>
     <script type="text/javascript" src="libs/mapping.js"></script>
     <script type="text/javascript" src="scripts.js"></script>
 </head>
@@ -115,16 +115,19 @@
 
                     <tbody data-bind="foreach: grades.objects">
                     <tr class="no-print">
-                        <td><input type="number" placeholder="Id" name="id" readonly data-bind="value: id"></td>
-                        <td><input type="number" max="5" min="2" step="0.5" data-bind="value: value" required="required"
+                        <td><input name="grade_id" type="number" placeholder="Id" name="id" readonly
+                                   data-bind="value: id"></td>
+                        <td><input name="grade_value" type="number" max="5" min="2" step="0.5" data-bind="value: value"
+                                   required="required"
                                    placeholder="Ocena">
                         </td>
-                        <td><input type="date" max="2021-06-25" data-bind="value: date" required="required"></td>
+                        <td><input name="grade_date" type="date" max="2021-06-25" data-bind="value: date"
+                                   required="required"></td>
                         <td>
-                            <select data-bind="options: self.courses.objects,
-                                               optionsValue: 'course.id',
-                                               optionsText: 'name',
-                                               optionsCaption: 'Wybierz...'"></select>
+                            <select data-bind="options: $parent.courses.objects,
+                                                        value: 'course',
+                                                        optionsText: (course) => course.name">
+                            </select>
                         </td>
                         <td>
                             <input data-bind="click: (data) => $parent.delete(data, $parent.grades)" type="submit"
@@ -147,10 +150,14 @@
                             <select data-bind="options: courses.objects,
                                                optionsValue: 'id',
                                                optionsText: 'name',
+                                               value: selectedCourseId,
                                                optionsCaption: 'Wybierz...'"></select>
                         </td>
                         <td class="no-print">
-                            <input data-bind="click: (data) => addObject('newGrade', grades)" type="submit"
+                            <input data-bind="click: (data) => {
+                                newGrade.studentIndex = self.currentStudent;
+                                return addObject('newGrade', grades)
+                            }" type="submit"
                                    name="newGrade" value="Dodaj Ocenę">
                         </td>
                     </tr>

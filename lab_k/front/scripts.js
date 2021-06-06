@@ -27,19 +27,20 @@ let Course = () => {
     }
 };
 
-let Model = function (path) {
-    let self = this;
-    let getPath = function (query) {
-        let parentId = self.isGrade ? viewController.currentStudent : null;
-        return API_URL + self.path.split('/').join('/' + parentId + '/') + (!query ? '/' : query);
-    };
 
+let Model = function (path) {
+    let thisModel = this;
     this.path = path;
     this.isGrade = (path === 'students/grades');
     this.objects = ko.observableArray();
     this.idFieldName = (path === 'students') ? 'index' : 'id';
 
-    self.get = function (query) {
+    let getPath = function (query) {
+        let parentId = thisModel.isGrade ? viewController.currentStudent : null;
+        return API_URL + thisModel.path.split('/').join('/' + parentId + '/') + (!query ? '/' : query);
+    };
+
+    thisModel.get = function (query) {
         console.log('GET');
         return $.ajax({
             url: getPath(query),
@@ -49,8 +50,9 @@ let Model = function (path) {
         });
     };
 
-    self.post = function (object) {
+    thisModel.post = function (object) {
         console.log('POST');
+        console.log(ko.mapping.toJSON(object));
         return $.ajax({
             url: getPath(),
             type: "POST",
@@ -60,9 +62,12 @@ let Model = function (path) {
         })
     };
 
-    self.put = function (object) {
+    thisModel.put = function (object) {
+        console.log("PUT");
+        console.log(ko.mapping.toJSON(object));
+
         return $.ajax({
-            url: getPath() + object[self.idFieldName](),
+            url: getPath() + object[thisModel.idFieldName](),
             type: "PUT",
             data: ko.mapping.toJSON(object),
             accept: 'application/json',
@@ -70,10 +75,10 @@ let Model = function (path) {
         })
     };
 
-    self.delete = function (object) {
+    thisModel.delete = function (object) {
         console.log('DELETE');
         return $.ajax({
-            url: getPath() + object[self.idFieldName](),
+            url: getPath() + object[thisModel.idFieldName](),
             type: "DELETE",
         })
     };
@@ -96,9 +101,16 @@ let ViewController = function () {
     self.newCourse = Course();
 
     self.currentStudent = 0;
+    this.selectedCourseId = 0;
 
     self.addObject = function (objectName, group) {
-        group.post(self[objectName])
+        if (objectName == 'newGrade') {
+            self.newGrade.course = {
+                id: this.selectedCourseId
+            }
+        }
+
+        group.post(this[objectName])
             .then(() => {
                 setTimeout(() => {
                     window.location.reload();
@@ -147,52 +159,10 @@ let ViewController = function () {
 
     self.onGoToGrades = function (index) {
         window.location.assign(window.location.href.replace("students", "grades"));
-
         self.currentStudent = index;
         self.get(self.grades);
         return true;
     };
-
-    self.getQuery = function (field) {
-        var query = '?';
-        for (var f in field) {
-            if (field.hasOwnProperty(f) && field[f]()) {
-                query += f + '=' + field[f]() + '&';
-            }
-        }
-        return query;
-    };
-
-    self.filters = {
-        students: {
-            index: ko.observable(),
-            name: ko.observable(),
-            surname: ko.observable(),
-            birthday: ko.observable()
-        },
-        courses: {
-            id: ko.observable(),
-            name: ko.observable(),
-            lecturer: ko.observable()
-        },
-        grades: {
-            date: ko.observable(),
-            minValue: ko.observable(),
-            course: ko.observable()
-        }
-    };
-    for (const categoryName in self.filters) {
-        if (self.filters.hasOwnProperty(categoryName)) {
-            const category = self.filters[categoryName];
-            for (var field in category) {
-                if (category.hasOwnProperty(field)) {
-                    category[field].subscribe(function () {
-                        self.get(self[categoryName], self.getQuery(category));
-                    }, null, 'change')
-                }
-            }
-        }
-    }
 };
 
 
