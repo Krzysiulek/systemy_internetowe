@@ -27,21 +27,36 @@ let Course = () => {
     }
 };
 
+let isGrade = (path) => (path === 'students/grades');
+
+let idFieldName = (path) => (path === 'students') ? 'index' : 'id';
+
+let convertToObservable = (data) => {
+    let observables = ko.observableArray();
+    data.forEach((object) => {
+        let newObject = {};
+
+        for (let field in object) {
+            if (field !== 'link' && object.hasOwnProperty(field)) {
+                newObject[field] = ko.observable(object[field]);
+            }
+        }
+
+        observables.push(newObject);
+    });
+    return observables;
+};
 
 let Model = function (path) {
-    let thisModel = this;
     this.path = path;
-    this.isGrade = (path === 'students/grades');
     this.objects = ko.observableArray();
-    this.idFieldName = (path === 'students') ? 'index' : 'id';
 
-    let getPath = function (query) {
-        let parentId = thisModel.isGrade ? viewController.currentStudent : null;
-        return API_URL + thisModel.path.split('/').join('/' + parentId + '/') + (!query ? '/' : query);
+    let getPath = (query) => {
+        let parentId = isGrade(this.path) ? viewController.currentStudent : null;
+        return API_URL + this.path.split('/').join('/' + parentId + '/') + (!query ? '/' : query);
     };
 
-    thisModel.get = function (query) {
-        console.log('GET');
+    this.get = (query) => {
         return $.ajax({
             url: getPath(query),
             type: "GET",
@@ -50,9 +65,7 @@ let Model = function (path) {
         });
     };
 
-    thisModel.post = function (object) {
-        console.log('POST');
-        console.log(ko.mapping.toJSON(object));
+    this.post = (object) => {
         return $.ajax({
             url: getPath(),
             type: "POST",
@@ -62,12 +75,10 @@ let Model = function (path) {
         })
     };
 
-    thisModel.put = function (object) {
-        console.log("PUT");
+    this.put = (object) => {
         console.log(ko.mapping.toJSON(object));
-
         return $.ajax({
-            url: getPath() + object[thisModel.idFieldName](),
+            url: getPath() + object[idFieldName(this.path)](),
             type: "PUT",
             data: ko.mapping.toJSON(object),
             accept: 'application/json',
@@ -75,37 +86,36 @@ let Model = function (path) {
         })
     };
 
-    thisModel.delete = function (object) {
-        console.log('DELETE');
+    this.delete = (object) => {
         return $.ajax({
-            url: getPath() + object[thisModel.idFieldName](),
+            url: getPath() + object[idFieldName(this.path)](),
             type: "DELETE",
         })
     };
 
 };
 
-let getAllData = function (viewController) {
+let updateStudentsAndCourses = () => {
     viewController.get(viewController.students);
     viewController.get(viewController.courses);
 };
 
 let ViewController = function () {
-    let thisModel = this;
-    thisModel.students = new Model('students');
-    thisModel.courses = new Model('courses');
-    thisModel.grades = new Model('students/grades');
+    this.students = new Model('students');
+    this.newStudent = Student();
+    this.currentStudent = 0;
 
-    thisModel.newStudent = Student();
-    thisModel.newGrade = Grade();
-    thisModel.newCourse = Course();
-
-    thisModel.currentStudent = 0;
+    this.courses = new Model('courses');
+    this.newCourse = Course();
     this.selectedCourseId = 0;
 
-    thisModel.addObject = function (objectName, group) {
-        if (objectName == 'newGrade') {
-            thisModel.newGrade.course = {
+    this.grades = new Model('students/grades');
+    this.newGrade = Grade();
+
+
+    this.addObject = function (objectName, group) {
+        if (objectName === 'newGrade') {
+            this.newGrade.course = {
                 id: this.selectedCourseId
             }
         }
@@ -118,59 +128,32 @@ let ViewController = function () {
             })
     };
 
-    let dataToObservable = function (data) {
-        let observables = ko.observableArray();
-        data.forEach(function (object) {
-            let newObject = {};
-            for (let field in object) {
-                if (field !== 'link' && object.hasOwnProperty(field)) {
-                    newObject[field] = ko.observable(object[field]);
-                }
-            }
-            observables.push(newObject);
-        });
-        return observables;
-    };
-
-    thisModel.get = function (group, query) {
-        group.get(query).then(function (data) {
-            let observables = dataToObservable(data);
+    this.get = (group, query) => {
+        group.get(query).then((data) => {
+            let observableData = convertToObservable(data);
             group.objects.removeAll();
-            observables().forEach(function (o) {
-                group.objects.push(o);
-            });
-            observables().forEach(function (object) {
+            observableData().forEach(o => group.objects.push(o));
+
+            observableData().forEach((object) => {
                 for (let field in object) {
                     if (object.hasOwnProperty(field) && typeof object[field] === "function") {
-                        object[field].subscribe(function (changes) {
-                            group.put(object);
-                        }, null, 'change')
+                        object[field].subscribe(() => group.put(object));
                     }
                 }
             });
         });
     };
 
-    thisModel.delete = function (object, group) {
-        group.delete(object).then(function () {
-            group.objects.remove(object);
-        });
-    };
+    this.delete = (object, group) => group.delete(object).then(() => group.objects.remove(object));
 
-    thisModel.onGoToGrades = function (index) {
+    this.goToGrades = (index) => {
         window.location.assign(window.location.href.replace("students", "grades"));
-        thisModel.currentStudent = index;
-        thisModel.get(thisModel.grades);
-        return true;
+        this.currentStudent = index;
+        this.get(this.grades);
     };
 };
 
 
-let viewController = new ViewController();
-getAllData(viewController);
-
-$(function () {
-    setTimeout(function () {
-        ko.applyBindings(viewController);
-    }, 10);
-});
+const viewController = new ViewController();
+updateStudentsAndCourses();
+$(() => setTimeout(() => ko.applyBindings(viewController), 1));

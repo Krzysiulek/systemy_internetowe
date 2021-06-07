@@ -58,7 +58,7 @@
                         </td>
                         <td><input type="date" required max="2021-06-25" data-bind="value: birthday"></td>
                         <td class="no-print" class="buttons">
-                            <input type="submit" data-bind="click: () => $parent.onGoToGrades(index())" value="Oceny">
+                            <input type="submit" data-bind="click: () => $parent.goToGrades(index())" value="Oceny">
                             <input data-bind="click: (data) => $parent.delete(data, $parent.students)" type="submit"
                                    value="Usuń">
                         </td>
