@@ -113,7 +113,7 @@
                         <TD class="no-print"></TD>
                     </tr>
 
-                    <tbody data-bind="foreach: grades.objects">
+                    <tbody data-bind="foreach: $root.grades.objects">
                     <tr class="no-print">
                         <td><input name="grade_id" type="number" placeholder="Id" name="id" readonly
                                    data-bind="value: id"></td>
@@ -124,8 +124,9 @@
                         <td><input name="grade_date" type="date" max="2021-06-25" data-bind="value: date"
                                    required="required"></td>
                         <td>
-                            <select data-bind="options: $parent.courses.objects,
-                                                        value: 'course',
+                            <select data-bind="options: $root.courses.objects,
+                                                        optionsValue: 'id',
+                                                        value: course.id,
                                                         optionsText: (course) => course.name">
                             </select>
                         </td>

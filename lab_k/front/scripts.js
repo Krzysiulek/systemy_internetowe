@@ -12,16 +12,18 @@ let Student = () => {
 
 let Grade = () => {
     return {
-        id: null,
+        id: ko.observable(),
         value: ko.observable(),
-        course: ko.observable(),
+        course: ko.observable({
+            id: null
+        }),
         date: ko.observable()
     }
 };
 
 let Course = () => {
     return {
-        id: null,
+        id: ko.observable(),
         lecturer: ko.observable(),
         name: ko.observable()
     }
@@ -39,6 +41,10 @@ let convertToObservable = (data) => {
         for (let field in object) {
             if (field !== 'link' && object.hasOwnProperty(field)) {
                 newObject[field] = ko.observable(object[field]);
+
+                if (field === 'course') {
+                    newObject[field] = {id: ko.observable(object[field]['id'])}
+                }
             }
         }
 
@@ -138,6 +144,10 @@ let ViewController = function () {
                 for (let field in object) {
                     if (object.hasOwnProperty(field) && typeof object[field] === "function") {
                         object[field].subscribe(() => group.put(object));
+                    }
+
+                    if (field === 'course' && object.hasOwnProperty(field)) {
+                        object[field]['id'].subscribe(() => group.put(object));
                     }
                 }
             });
