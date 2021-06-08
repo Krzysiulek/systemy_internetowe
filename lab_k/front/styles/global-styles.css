@@ -108,3 +108,13 @@ tr:hover:not(:nth-child(1)):not(:nth-child(2)) {
         width: 0;
     }
 }
+
+.elements-in-column {
+    display: flex;
+    flex-direction: column;
+}
+
+.elements-in-column > select {
+    width: auto;
+    margin-top: auto;
+}

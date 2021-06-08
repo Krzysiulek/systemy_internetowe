@@ -36,15 +36,23 @@
                         <TD>Indeks</TD>
                         <TD>Imie</TD>
                         <TD>Nazwisko</TD>
-                        <TD>Data urodzenia</TD>
+                        <TD class="elements-in-column">
+                            <div>Data urodzenia</div>
+                            <select data-bind="options: birthdayCompare,
+                                               optionsText: 'text',
+                                               optionsValue: 'value',
+                                               value: birthdayCompareFilter"></select></TD>
                         <TD class="no-print">Akcje</TD>
                     </tr>
                     <tr class="tr-headers no-print">
                         <TD><input type="text" placeholder="Szukaj indeks" name="id"></TD>
-                        <TD><input type="text" placeholder="Szukaj imię" name="id"></TD>
-                        <TD><input type="text" placeholder="Szukaj nazwisko" name="id"></TD>
+                        <TD><input type="text" data-bind="textInput: firstNameFilter" placeholder="Szukaj imię"
+                                   name="id"></TD>
+                        <TD><input type="text" data-bind="textInput: lastNameFilter" placeholder="Szukaj nazwisko"
+                                   name="id"></TD>
                         <TD class="no-print">
-                            <input type="date" placeholder="Szukaj po dacie urodzenia" name="id">
+                            <input type="date" data-bind="value: birthdayFilter" placeholder="Szukaj po dacie urodzenia"
+                                   name="id">
                         </TD>
                         <TD></TD>
                     </tr>
@@ -91,23 +99,43 @@
                 <table class="flex-table">
                     <tr class="tr-headers">
                         <TD>Id</TD>
-                        <TD>Ocena</TD>
-                        <TD>Data wystawienia</TD>
+                        <TD class="elements-in-column">
+                            <div>Ocena</div>
+
+                            <select data-bind="options: gradeValueCompare,
+                                               optionsText: 'text',
+                                               optionsValue: 'value',
+                                               value: gradeValueCompareFilter"></select>
+                        </TD>
+                        <TD class="elements-in-column row-2">
+                            <div>Data wystawienia</div>
+                            <select data-bind="options: gradeDateCompare,
+                                               optionsText: 'text',
+                                               optionsValue: 'value',
+                                               value: gradeDateCompareFilter"></select>
+                        </TD>
                         <TD>Przedmiot</TD>
                         <TD class="no-print">Akcje</TD>
                     </tr>
                     <tr class="tr-headers no-print">
                         <TD></TD>
                         <TD>
-                            <input type="number" placeholder="Szukaj oceny" name="id">
+                            <input max="5"
+                                   min="2"
+                                   step="0.5"
+                                   type="number"
+                                   data-bind="textInput: gradeValueFilter"
+                                   placeholder="Szukaj oceny"
+                                   name="id">
                         </TD>
                         <TD>
-                            <input type="date" name="id">
+                            <input data-bind="value: gradeDateFilter" type="date" name="id">
                         </TD>
                         <TD>
                             <select data-bind="options: courses.objects,
                                                optionsValue: 'id',
                                                optionsText: 'name',
+                                               value: gradeCourseId,
                                                optionsCaption: 'Wybierz...'"></select>
                         </TD>
                         <TD class="no-print"></TD>
@@ -179,8 +207,9 @@
                     </tr>
                     <tr class="no-print">
                         <td></td>
-                        <td><input type="text" placeholder="Wyszukaj przedmiot"></td>
-                        <td><input type="text" placeholder="Wyszukaj prowadzącego"></td>
+                        <td><input data-bind="textInput: nameFilter" type="text" placeholder="Wyszukaj przedmiot"></td>
+                        <td><input data-bind="textInput: lecturerFilter" type="text"
+                                   placeholder="Wyszukaj prowadzącego"></td>
                         <td class="no-print"><input type="button" value="Usuń"></td>
                     </tr>
 

@@ -118,7 +118,6 @@ let ViewController = function () {
     this.grades = new Model('students/grades');
     this.newGrade = Grade();
 
-
     this.addObject = function (objectName, group) {
         if (objectName === 'newGrade') {
             this.newGrade.course = {
@@ -161,6 +160,113 @@ let ViewController = function () {
         this.currentStudent = index;
         this.get(this.grades);
     };
+
+    // filtracja studentów
+    this.firstNameFilter = ko.observable();
+    this.lastNameFilter = ko.observable();
+    this.birthdayFilter = ko.observable();
+    this.birthdayCompareFilter = ko.observable();
+
+    this.birthdayCompare = ko.observableArray([
+        {value: 0, text: "równa"},
+        {value: -1, text: "mniejsza"},
+        {value: 1, text: "większa"},
+    ]);
+
+    this.firstNameFilter.subscribe(() => this.onStudentsFilterChanged());
+    this.lastNameFilter.subscribe(() => this.onStudentsFilterChanged());
+    this.birthdayFilter.subscribe(() => this.onStudentsFilterChanged());
+    this.birthdayCompareFilter.subscribe(() => this.onStudentsFilterChanged());
+
+
+    this.getStudentsQuery = () => {
+        let query = '?';
+        if (this.firstNameFilter())
+            query += 'firstName=' + this.firstNameFilter() + '&'
+
+        if (this.lastNameFilter())
+            query += 'lastName=' + this.lastNameFilter() + '&'
+
+        if (this.birthdayFilter())
+            query += 'birthday=' + this.birthdayFilter() + '&'
+
+        if (this.birthdayCompareFilter())
+            query += 'birthdayCompare=' + this.birthdayCompareFilter() + '&'
+
+        return query
+
+    };
+
+    // filtracja kursów
+    this.lecturerFilter = ko.observable();
+    this.nameFilter = ko.observable();
+
+    this.lecturerFilter.subscribe(() => this.onCoursesFilterChanged());
+    this.nameFilter.subscribe(() => this.onCoursesFilterChanged());
+
+    this.getCoursesQuery = () => {
+        let query = '?';
+        if (this.lecturerFilter())
+            query += 'lecturer=' + this.lecturerFilter() + '&'
+
+        if (this.nameFilter())
+            query += 'name=' + this.nameFilter() + '&'
+        return query
+    };
+
+
+    // filtracja ocen
+    this.gradeValueFilter = ko.observable();
+    this.gradeValueCompareFilter = ko.observable();
+    this.gradeDateFilter = ko.observable();
+    this.gradeDateCompareFilter = ko.observable();
+    this.gradeCourseId = ko.observable();
+
+    this.gradeValueFilter.subscribe(() => this.onGradesFilterChanged());
+    this.gradeValueCompareFilter.subscribe(() => this.onGradesFilterChanged());
+    this.gradeDateFilter.subscribe(() => this.onGradesFilterChanged());
+    this.gradeDateCompareFilter.subscribe(() => this.onGradesFilterChanged());
+    this.gradeCourseId.subscribe(() => this.onGradesFilterChanged());
+
+    this.gradeDateCompare = ko.observableArray([
+        {value: 0, text: "równa"},
+        {value: -1, text: "mniejsza"},
+        {value: 1, text: "większa"},
+    ]);
+
+    this.gradeValueCompare = ko.observableArray([
+        {value: 0, text: "równa"},
+        {value: -1, text: "mniejsza"},
+        {value: 1, text: "większa"},
+    ]);
+
+
+    this.getGradesQuery = () => {
+        let query = '?';
+        if (this.currentStudent)
+            query += 'index=' + this.currentStudent + '&'
+
+        if (this.gradeValueFilter())
+            query += 'value=' + this.gradeValueFilter() + '&'
+
+        if (this.gradeValueCompareFilter())
+            query += 'valueCompare=' + this.gradeValueCompareFilter() + '&'
+
+        if (this.gradeDateFilter())
+            query += 'date=' + this.gradeDateFilter() + '&'
+
+        if (this.gradeDateCompareFilter())
+            query += 'dateCompare=' + this.gradeDateCompareFilter() + '&'
+
+        if (this.gradeCourseId())
+            query += 'course=' + this.gradeCourseId() + '&'
+
+        return query
+    };
+
+    this.onStudentsFilterChanged = () => this.get(viewController.students, this.getStudentsQuery());
+    this.onCoursesFilterChanged = () => this.get(viewController.courses, this.getCoursesQuery());
+    this.onGradesFilterChanged = () => this.get(viewController.grades, this.getGradesQuery());
 };
 
 
